@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Fundo -->
+  <rect width="512" height="512" fill="url(#grad)" rx="80"/>
+  
+  <!-- Símbolo de meditação -->
+  <g fill="white" opacity="0.9">
+    <!-- Círculo central -->
+    <circle cx="256" cy="256" r="128"/>
+    
+    <!-- Pontos de meditação -->
+    <g opacity="0.7">
+      <circle cx="256" cy="170" r="25"/>
+      <circle cx="256" cy="342" r="25"/>
+      <circle cx="170" cy="256" r="25"/>
+      <circle cx="342" cy="256" r="25"/>
+    </g>
+  </g>
+</svg> 

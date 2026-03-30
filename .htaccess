@@ -1,0 +1,15 @@
+#CONFIG PARA OS ARQUIVOS DE ÁUDIO/UPLOAD DO USUÁRIO
+php_value upload_max_filesize 50M
+php_value post_max_size 50M
+php_value max_execution_time 300
+php_value max_input_time 300
+php_value memory_limit 256M
+
+RewriteEngine On
+
+#REDIRECIONA PARA O INDEX.PHP SE O ARQUIVO NÃO EXISTE
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteRule ^(.*)$ index.php [QSA,L]

@@ -1,0 +1,1193 @@
+/* Configurações básicas */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    min-height: 100vh;
+    color: white;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background 3s ease;
+}
+
+.accordion-content .session-item {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background-color 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Header da sessão colapsável */
+.session-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.session-item-header:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    margin: -10px;
+}
+
+/* Ícone de colapso */
+.session-collapse-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: bold;
+}
+
+.session-item.collapsed .session-collapse-icon {
+    transform: rotate(-90deg);
+}
+
+/* Conteúdo da sessão */
+.session-item-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 15px;
+}
+
+.session-item.expanded .session-item-content {
+    max-height: 200px;
+    padding: 15px;
+}
+
+/* Informações básicas da sessão */
+.session-basic-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.session-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.session-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.session-detail-item:last-child {
+    border-bottom: none;
+}
+
+.session-detail-label {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+
+.accordion-content .session-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-content .session-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* Animação do fundo se movendo enquanto o timer estiver rodando */
+body.meditation-active {
+    background: linear-gradient(135deg, var(--color1, #667eea) 0%, var(--color2, #764ba2) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 3s ease-in-out infinite;
+}
+
+/* Frames pra animação de movimento do gradiente */
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Container principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container para páginas de autenticação */
+body:has(.auth-container) .container,
+.auth-page .container {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Cabeçalho */
+.header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+}
+
+.nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 2rem 1rem !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 15px !important;
+    margin: 0 auto 2rem auto !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    width: 100% !important;
+    max-width: 800px !important;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    color: white !important;
+    margin: 0 0 1rem 0 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    text-align: center !important;
+}
+
+.user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.user-info span {
+    color: white !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dashboard */
+.dashboard-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    padding: 0 1rem !important;
+}
+
+/* Timer de Meditação */
+.meditation-timer {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto 2rem auto !important;
+}
+
+.meditation-timer h2 {
+    color: white !important;
+    font-size: 1.8rem !important;
+    font-weight: 600 !important;
+    margin: 0 0 1.5rem 0 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Conteúdo principal */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+/* Card principal */
+.meditation-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Display do timer */
+.timer-display {
+    font-size: 4rem;
+    font-weight: 300;
+    color: white;
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Botões */
+.btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0.5rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #17a2b8, #6f42c1);
+}
+
+/* Presets */
+.presets {
+    margin: 2rem 0;
+}
+
+.preset-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Controles da música */
+.music-controls {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.music-controls h3 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.music-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.music-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.music-option input[type="radio"] {
+    margin: 0;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    margin-top: 1rem;
+}
+
+#volume-slider {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    outline: none;
+    cursor: pointer;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#volume-display {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Controles das cores */
+.color-controls {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.color-controls h4 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.color-picker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.color-inputs-row {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-buttons-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-picker-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.color-picker-group label {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.color-picker-group input[type="color"] {
+    width: 60px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.color-picker-group input[type="color"]:hover {
+    transform: scale(1.05);
+}
+
+.color-picker-group input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 8px;
+}
+
+.color-picker-group input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 8px;
+}
+
+#apply-colors-btn, #reset-colors-btn {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+#apply-colors-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+#apply-colors-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+#reset-colors-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#reset-colors-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Upload de áudio */
+.audio-upload {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 0;
+    margin: 1rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.9rem;
+}
+
+/* Select da Categoria */
+.audio-upload .form-group select#audio-category,
+.audio-upload .form-group select {
+    background: transparent !important;
+    color: #fff !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    backdrop-filter: none;
+}
+
+.audio-upload .form-group select#audio-category:focus,
+.audio-upload .form-group select:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.35);
+    outline-offset: 2px;
+}
+
+.audio-upload .form-group select option {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+}
+
+/* Firefox: força cor do item selecionado no dropdown */
+@-moz-document url-prefix() {
+    .audio-upload .form-group select option:checked {
+        background: rgba(255, 255, 255, 0.15) none repeat scroll 0% 0% !important;
+        color: #fff !important;
+    }
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form-group small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+}
+
+/* Lista de arquivos */
+.audio-files-list {
+    margin-top: 1rem;
+}
+
+.audio-files-list h5 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+#audio-files-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+#audio-files-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#audio-files-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+#audio-files-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+#audio-files-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.audio-file-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.audio-file-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.audio-file-title {
+    color: white;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.audio-file-details {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+}
+
+.audio-file-category {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.audio-file-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.audio-play-btn,
+.audio-delete-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.audio-play-btn {
+    background: #28a745;
+    color: white;
+}
+
+.audio-play-btn:hover {
+    background: #218838;
+}
+
+.audio-delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.audio-delete-btn:hover {
+    background: #c82333;
+}
+
+/* Visualizador de áudio */
+.audio-visualizer {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.visualizer-container {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    height: 80px;
+    margin-bottom: 15px;
+    gap: 3px;
+}
+
+.visualizer-bar {
+    width: 8px;
+    background: linear-gradient(to top, #667eea, #764ba2);
+    border-radius: 4px 4px 0 0;
+    transition: height 0.1s ease;
+    min-height: 4px;
+    max-height: 80px;
+    animation: visualizerPulse 0.5s ease-in-out infinite alternate;
+}
+
+.visualizer-bar:nth-child(odd) {
+    background: linear-gradient(to top, #f093fb, #f5576c);
+    animation-delay: 0.1s;
+}
+
+.visualizer-bar:nth-child(even) {
+    background: linear-gradient(to top, #4facfe, #00f2fe);
+    animation-delay: 0.2s;
+}
+
+.visualizer-bar:nth-child(3n) {
+    background: linear-gradient(to top, #43e97b, #38f9d7);
+    animation-delay: 0.3s;
+}
+
+.visualizer-bar:nth-child(4n) {
+    background: linear-gradient(to top, #fa709a, #fee140);
+    animation-delay: 0.4s;
+}
+
+@keyframes visualizerPulse {
+    0% {
+        transform: scaleY(0.3);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+.visualizer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+#audio-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#audio-time {
+    font-family: 'Courier New', monospace;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Container de login */
+.auth-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 1000;
+}
+
+.auth-form {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-form h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.auth-form .form-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+
+.auth-form input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .dashboard-content {
+        padding: 0 0.5rem !important;
+    }
+    
+    .meditation-timer {
+        padding: 1.5rem !important;
+        margin: 0 auto 1.5rem auto !important;
+    }
+    
+    .meditation-timer h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .meditation-card {
+        padding: 1.5rem;
+    }
+    
+    .timer-display {
+        font-size: 3rem;
+    }
+    
+    .music-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .audio-file-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .auth-form {
+        margin: 0 1rem; /* margem lateral pra mobile */
+        padding: 1.5rem;
+        width: calc(100% - 2rem);
+        max-width: 420px;
+    }
+
+    /* Mobile empilha logo e formulário */
+    .auth-container {
+        flex-direction: column !important;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 20px 0;
+    }
+
+    .auth-container .logo {
+        width: 100%;
+        text-align: center;
+        padding: 0 16px;
+    }
+
+    .auth-container .logo h1 {
+        font-size: 1.6rem;
+        line-height: 1.2;
+        color: #fff;
+    }
+
+    /* Esconder inputs de cor no mobile e mostrar apenas a roleta */
+    .color-picker-group input[type="color"] {
+        display: none !important;
+    }
+    
+    .music-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Esconder os labels dos inputs também */
+    .color-picker-group label {
+        display: none !important;
+    }
+    
+    .color-picker-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .color-picker-group {
+        width: 100%;
+        align-items: center;
+    }
+    
+    .color-picker-group label {
+        text-align: center;
+    }
+    
+    #apply-colors-btn, #reset-colors-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    /* Faz as sessões serem formato cascata */
+    .session-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .session-basic-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        width: 100%;
+    }
+    
+    .session-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .session-detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+    }
+    
+    .session-detail-value {
+        font-size: 0.9rem;
+    }
+    
+    /* Responsividade do Accordion */
+    .accordion-header {
+        padding: 15px;
+    }
+    
+    .accordion-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .accordion-content #sessions-list {
+        padding: 15px;
+    }
+}
+
+/* Estilos para status das sessões */
+.session-item.completed {
+    border-left: 4px solid #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.session-item.active {
+    border-left: 4px solid #FF9800;
+    background: rgba(255, 152, 0, 0.1);
+}
+
+.session-item.interrupted {
+    border-left: 4px solid #F44336;
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.session-info {
+    flex: 1;
+}
+
+.session-date {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.session-duration {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.session-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.completed {
+    background: rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.status-badge.active {
+    background: rgba(255, 152, 0, 0.3);
+    color: #FF9800;
+    border: 1px solid rgba(255, 152, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.status-badge.interrupted {
+    background: rgba(244, 67, 54, 0.3);
+    color: #F44336;
+    border: 1px solid rgba(244, 67, 54, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.status-badge.unknown {
+    background: rgba(158, 158, 158, 0.3);
+    color: white;
+    border: 1px solid rgba(158, 158, 158, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 480px) {
+    .meditation-timer {
+        padding: 1rem !important;
+        margin: 0 auto 1rem auto !important;
+    }
+    
+    .meditation-timer h2 {
+        font-size: 1.3rem !important;
+    }
+    
+    .timer-display {
+        font-size: 2.5rem;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .music-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Accordion para Histórico de Sessões */
+.session-history {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.accordion-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    font-weight: bold;
+}
+
+.accordion-header.active .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background: transparent !important;
+}
+
+/* Conteúdo do histórico ao expandir */
+.session-history .accordion-content.active {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.accordion-content.active {
+    max-height: 1000px;
+    transition: max-height 0.3s ease-in;
+}
+
+.accordion-content #sessions-list {
+    padding: 20px;
+}
+
+
+/* Transparência do upload */
+.audio-upload .accordion-content {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+
+/* Ajuste cabeçalho do accordion de upload*/
+.audio-upload .accordion-header {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}

@@ -1,0 +1,18 @@
+#ARQUIVOS PARA O DOCKER IGNORAR
+docker/
+logs/
+uploads/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env
+.env.local
+.env.production
+INICIAR.ps1
+PARAR.ps1
+INFOS.md
+EXPLICACOES.md
+INFOS.txt
+PASSO A PASSO.txt
