@@ -70,7 +70,7 @@ $user_name = $_SESSION['user_name'];
                             <span class="music-label">Noite</span>
                         </label>
                         <label class="music-option">
-                            <input type="radio" name="background-music" value="pordosol">
+                            <input type="radio" name="background-music" value="por do sol">
                             <span class="music-label">Pôr do sol</span>
                         </label>
                         <label class="music-option">

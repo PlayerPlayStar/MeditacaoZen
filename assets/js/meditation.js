@@ -580,11 +580,19 @@ class MeditationTimer {
         
         // Fallback: tentar nomes comuns
         const audioExtensions = ['mp4', 'mp3', 'wav', 'ogg', 'm4a']; // MP4 primeiro
-        const commonNames = ['audio', 'music', 'sound', 'noite', 'por do sol', 'calmaria', 'zen', 'nature', 'rain', 'ocean']; // Inclui novos e antigos para compatibilidade
+        const commonNames = ['audio', 'music', 'sound', 'noite', 'calmaria', 'zen', 'nature', 'rain', 'ocean']; // Inclui novos e antigos para compatibilidade
+        
+        // Mapeamento de type para pasta correta
+        const folderMapping = {
+            'noite': 'Noite',
+            'calmaria': 'Calmaria',
+            'por do sol': 'Por do Sol'
+        };
+        const folder = folderMapping[type] || type;
         
         for (const name of commonNames) {
             for (const ext of audioExtensions) {
-                const filePath = `/assets/audio/manual/${type}/${name}.${ext}`;
+                const filePath = `/assets/audio/manual/${folder}/${name}.${ext}`;
                 try {
                     const response = await fetch(filePath, { method: 'HEAD' });
                     if (response.ok) {

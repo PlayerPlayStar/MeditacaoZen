@@ -1,38 +1,23 @@
 <?php
-/**
- * API para Gerenciamento de Sessões de Meditação
- * 
- * Esse arquivo gerencia todas as operações relacionadas às sessões de meditação:
- * - Início de sessões
- * - Finalização de sessões
- * - Listagem de histórico de sessões
- * - Atualização de sessões ativas
- */
 
-// === CONFIGURAÇÕES INICIAIS ===
-// Configura o timezone para Brasília
+// configures timezone to Brasília
 date_default_timezone_set('America/Sao_Paulo');
 
 session_start();
 
-// === HEADERS HTTP ===
-// Configurar headers para API JSON
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Credentials: true');
 
-// === LOGS DE DEBUG ===
-// Registra as informações da sessão para debug
+// logs debug
 error_log("=== API SESSIONS DEBUG ===");
 error_log("Session ID: " . session_id());
 error_log("User ID: " . ($_SESSION['user_id'] ?? 'NOT SET'));
 error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
 error_log("Request URI: " . $_SERVER['REQUEST_URI']);
 
-// === VERIFICAÇÃO DE AUTENTICAÇÃO ===
-// Verifica se o usuário está logado
 if (!isset($_SESSION['user_id'])) {
     error_log("Usuário não autenticado");
     http_response_code(401);
@@ -46,31 +31,30 @@ if (!isset($_SESSION['user_id'])) {
 
 error_log("Usuário autenticado: " . $_SESSION['user_id']);
 
-// === CONEXÃO COM BANCO DE DADOS ===
 require_once '../config/database.php';
 
 $user_id = $_SESSION['user_id'];
 $input = json_decode(file_get_contents('php://input'), true);
 
-// Direcionar requisições POST para funções específicas
+// handles POST requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $input['action'] ?? '';
     
     switch ($action) {
         case 'start':
-            startSession($pdo, $user_id, $input);        // Inicia nova sessão
+            startSession($pdo, $user_id, $input);
             break;
             
         case 'complete':
-            completeSession($pdo, $user_id, $input);      // Finaliza sessão
+            completeSession($pdo, $user_id, $input);
             break;
             
         case 'interrupt':
-            interruptSession($pdo, $user_id, $input);      // Interrompe sessão
+            interruptSession($pdo, $user_id, $input);
             break;
             
         case 'reactivate':
-            reactivateSession($pdo, $user_id, $input);      // Reativa sessão
+            reactivateSession($pdo, $user_id, $input);
             break;
             
         case 'list':
@@ -86,18 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['error' => 'Método não permitido']);
 }
 
-/**
- * startSession() - Inicia uma nova sessão de meditação
- * @param PDO $pdo - Conexão com banco de dados
- * @param int $user_id - ID do usuário
- * @param array $input - Dados da requisição (duration, start_time)
- * 
- * - Finaliza qualquer sessão ativa anterior do usuário
- * - Cria nova sessão com status 'active'
- * - Usa timezone de Brasília
- * - Retorna session_id
- */
-
+// start, complete, interrupt, reactivate, list sessions
 function startSession($pdo, $user_id, $input) {
     error_log("=== START SESSION ===");
     error_log("Input data: " . json_encode($input));
@@ -105,7 +78,6 @@ function startSession($pdo, $user_id, $input) {
     $duration = $input['duration'] ?? 15;
     
     try {
-        // PRIMEIRO: Finalizar qualquer sessão ativa existente
         $stmt = $pdo->prepare("
             UPDATE meditation_sessions 
             SET status = 'interrupted', end_time = NOW() 
@@ -118,15 +90,12 @@ function startSession($pdo, $user_id, $input) {
             error_log("Finalizadas $interruptedCount sessões ativas anteriores");
         }
         
-        // Usar horário atual de Brasília
         $start_time = date('Y-m-d H:i:s');
         error_log("Horário do servidor (Brasília): $start_time");
         
-        // Se o cliente forneceu horário, usar ele (mas validar)
         if (isset($input['start_time']) && !empty($input['start_time'])) {
             try {
                 $client_time = new DateTime($input['start_time']);
-                // Manter o timezone de Brasília
                 $client_time->setTimezone(new DateTimeZone('America/Sao_Paulo'));
                 $start_time = $client_time->format('Y-m-d H:i:s');
                 error_log("Usando horário do cliente (convertido para Brasília): $start_time");
@@ -167,17 +136,6 @@ function startSession($pdo, $user_id, $input) {
     }
 }
 
-/**
- * completeSession() - Finaliza uma sessão
- * @param PDO $pdo - Conexão com banco de dados
- * @param int $user_id - ID do usuário
- * @param array $input - Dados da requisição (session_id, end_time)
- * 
- * - Atualiza sessão para status 'completed'
- * - Define end_time da sessão
- * - Verifica se a sessão pertence ao usuário e está mesmo ativa
- */
-
 function completeSession($pdo, $user_id, $input) {
     error_log("=== COMPLETE SESSION ===");
     error_log("Input data: " . json_encode($input));
@@ -192,15 +150,12 @@ function completeSession($pdo, $user_id, $input) {
     }
     
     try {
-        // Usar horário atual de Brasília
         $end_time = date('Y-m-d H:i:s');
         error_log("Horário do servidor (Brasília): $end_time");
         
-        // Se o cliente forneceu horário, usar ele (mas validar)
         if (isset($input['end_time']) && !empty($input['end_time'])) {
             try {
                 $client_time = new DateTime($input['end_time']);
-                // Manter o timezone de Brasília
                 $client_time->setTimezone(new DateTimeZone('America/Sao_Paulo'));
                 $end_time = $client_time->format('Y-m-d H:i:s');
                 error_log("Usando horário do cliente (convertido para Brasília): $end_time");
@@ -242,17 +197,6 @@ function completeSession($pdo, $user_id, $input) {
     }
 }
 
-/**
- * interruptSession() - Interrompe uma sessão
- * @param PDO $pdo - Conexão com banco de dados
- * @param int $user_id - ID do usuário
- * @param array $input - Dados da requisição (session_id, end_time)
- * 
- * - Atualiza sessão para status 'interrupted'
- * - Define end_time da sessão
- * - Verifica se a sessão pertence ao usuário e está mesmo ativa
- */
-
 function interruptSession($pdo, $user_id, $input) {
     error_log("=== INTERRUPT SESSION ===");
     error_log("Input data: " . json_encode($input));
@@ -267,15 +211,12 @@ function interruptSession($pdo, $user_id, $input) {
     }
     
     try {
-        // Usar horário atual de Brasília
         $end_time = date('Y-m-d H:i:s');
         error_log("Horário do servidor (Brasília): $end_time");
         
-        // Se o cliente forneceu horário, usar ele (mas validar)
         if (isset($input['end_time']) && !empty($input['end_time'])) {
             try {
                 $client_time = new DateTime($input['end_time']);
-                // Manter o timezone de Brasília
                 $client_time->setTimezone(new DateTimeZone('America/Sao_Paulo'));
                 $end_time = $client_time->format('Y-m-d H:i:s');
                 error_log("Usando horário do cliente (convertido para Brasília): $end_time");
@@ -317,16 +258,6 @@ function interruptSession($pdo, $user_id, $input) {
     }
 }
 
-/**
- * reactivateSession() - Reativa uma sessão interrompida
- * @param PDO $pdo - Conexão com banco de dados
- * @param int $user_id - ID do usuário
- * @param array $input - Dados da requisição (session_id)
- * 
- * - Atualiza sessão para status 'active'
- * - Limpa end_time para indicar que está em andamento
- * - Verifica se a sessão pertence ao usuário e está 'interrupted'
- */
 
 function reactivateSession($pdo, $user_id, $input) {
     error_log("=== REACTIVATE SESSION ===");
@@ -374,18 +305,6 @@ function reactivateSession($pdo, $user_id, $input) {
     }
 }
 
-/**
- * listSessions() - Lista histórico de sessões do usuário
- * @param PDO $pdo - Conexão com banco de dados
- * @param int $user_id - ID do usuário
- * 
- * - Busca últimas 10 sessões do usuário
- * - Ordena por data de início (mais recentes primeiro)
- * - Calcula duração para sessões completadas
- * - Formata datas para exibição
- * - Retorna lista em JSON
- */
-
 function listSessions($pdo, $user_id) {
     error_log("=== LIST SESSIONS ===");
     error_log("User ID: $user_id");
@@ -404,9 +323,7 @@ function listSessions($pdo, $user_id) {
         
         error_log("Sessões encontradas: " . count($sessions));
         
-        // Processar cada sessão
         foreach ($sessions as &$session) {
-            // Calcular duração real
             if ($session['end_time'] && $session['start_time']) {
                 $start = new DateTime($session['start_time']);
                 $end = new DateTime($session['end_time']);
@@ -416,19 +333,16 @@ function listSessions($pdo, $user_id) {
                 $session['actual_duration'] = '--:--:--';
             }
             
-            // Formatar data para exibição
             $start_time = new DateTime($session['start_time']);
             $start_time->setTimezone(new DateTimeZone('America/Sao_Paulo'));
             
-            // Para sessões ativas, usar o horário atual de Brasília
             if ($session['status'] === 'active') {
                 $current_time = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
                 $session['formatted_date'] = $current_time->format('d/m/Y H:i');
                 $session['formatted_date_full'] = $current_time->format('d/m/Y H:i:s');
                 $session['is_active'] = true;
-                $session['start_time_iso'] = $current_time->format('c'); // ISO format para JavaScript
+                $session['start_time_iso'] = $current_time->format('c');
                 
-                // Calcula duração em tempo real
                 $session_start = new DateTime($session['start_time'], new DateTimeZone('America/Sao_Paulo'));
                 $now = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
                 $duration = $now->diff($session_start);
@@ -440,7 +354,6 @@ function listSessions($pdo, $user_id) {
                 $session['start_time_iso'] = $start_time->format('c');
             }
             
-            // Adiciona informações de timezone
             $session['timezone'] = 'America/Sao_Paulo';
             $session['timezone_offset'] = $start_time->getOffset() / 3600;
         }
