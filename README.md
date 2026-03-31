@@ -17,14 +17,16 @@ RU: 3749478
 
 ## Como iniciar o aplicativo?
 
-1) É necessário ter o Docker Desktop instalado no computador para utilização do aplicativo. Caso você já tenha o Docker instalado, por favor pule para o passo 4. Caso não tenha, siga para o passo 2 para instalar o Docker Desktop.
+1) É necessário ter o Docker Desktop instalado no computador para início e utilização do aplicativo.
+Caso você já tenha o Docker instalado, por favor pule para o passo 3. Caso não tenha, siga para o passo 2 para instalar o Docker Desktop.
 
-2) Acesse o site do Docker Desktop e faça o download e instalação do software.
+2) Acesse o site do Docker Desktop e faça o download e instalação do software:
 https://www.docker.com/products/docker-desktop/
+Após a instalação, abra o Docker Desktop e verifique se o serviço está rodando. O Docker precisa estar instalado e pronto para iniciar os containers para funcionamento correto.
 
-3) Após a instalação, abra o Docker Desktop e verifique se o serviço está rodando. O Docker precisa estar instalado e atualizado para iniciar os containers.
+3) Clique com o botão direito do mouse no arquivo 1_start.ps1 (em /scripts) e em "Executar com o Powershell" e aguarde os containers subirem. Após os containers terem iniciado, o aplicativo é aberto automaticamente no navegador pelo link: http://localhost:8080
 
-4) Clique duas vezes no arquivo INICIAR.ps1 (ou clique com o botão direito do mouse e em "executar Powershell") e aguarde os containers subirem. Após os containers terem iniciado, o aplicativo é aberto automaticamente no navegador pelo link http://localhost:8080.
+4) Após a utilização, clique com o botão direito do mouse no arquivo 2_pause.ps1 (em /scripts) e em "Executar com o Powershell" para parar os containers.
 
 
 ## Tecnologias Utilizadas ##
