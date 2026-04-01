@@ -1,12 +1,12 @@
-# O que é Meditação Zen?
+## O que é Meditação Zen? ##
 
 Meditação Zen é um aplicativo de meditação para redução de ansiedade com foco em estudantes de nível superior, para a Atividade Extensionista I e II da faculdade Uninter como meu projeto de conclusão de curso.
-Curso: CST Ciência de Dados
-Aluna: Victória Bertini Matos Andrade
-RU: 3749478
+- Curso: CST Ciência de Dados
+- Aluna: Victória Bertini Matos Andrade
+- RU: 3749478
 
 
-## Algumas funcionalidades:
+## Algumas funcionalidades: ##
 
 - Sistema de usuários com registro e login
 - Temporizador com opções de 5 à 30 minutos
@@ -15,7 +15,7 @@ RU: 3749478
 - Docker para fácil instalação
 
 
-## Como iniciar o aplicativo?
+## Como iniciar o aplicativo? ##
 
 1) É necessário ter o Docker Desktop instalado no computador para início e utilização do aplicativo.
 Caso você já tenha o Docker instalado, por favor pule para o passo 3. Caso não tenha, siga para o passo 2 para instalar o Docker Desktop.
@@ -60,24 +60,6 @@ Seguem as licenças indicadas na página de origem:
       https://creativecommons.org/licenses/by/3.0/
 
 
-
-## Configuração do BD, Docker e senhas ##
-
-### Banco de Dados
-- As tabelas são criadas automaticamente e os índices ajudam nas consultas
-
-### Segurança
-- Senhas hasheadas com `password_hash()`
-- Prepared statements para o SQL
-- Validação de entrada
-
-### Docker
-- Volumes persistentes para guardar os dados dos usuários
-- Health checks para garantir que os containers funcionem corretamente
-- Logs centralizados
-- Ambiente isolado
-
-
-## Licença
+## Licença ##
 
 Esse projeto está sob a licença MIT, visto que é para conclusão de curso e não irei comercializado.
