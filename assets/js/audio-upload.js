@@ -220,9 +220,7 @@ class AudioUploadManager {
     async playAudioFile(audioId) {
         this.stopAllAudioPlayers();
         
-        // Pré-visualização:
         try {
-            // Criar elemento de áudio/vídeo temporário
             const media = document.createElement('audio');
             media.src = `/api/audio.php?action=get&id=${audioId}`;
             media.volume = 0.5;
@@ -230,22 +228,17 @@ class AudioUploadManager {
             media.style.width = '100%';
             media.style.marginTop = '10px';
             
-            // Mostrar feedback
             const btn = document.querySelector(`[data-id="${audioId}"].audio-play-btn`);
             const originalText = btn.textContent;
             btn.textContent = '🔊 Tocando...';
             btn.disabled = true;
             
-            // Inserir player na interface
             const fileItem = document.querySelector(`[data-id="${audioId}"].audio-file-item`);
             if (fileItem) {
-                // Remover player anterior se existir
                 const existingPlayer = fileItem.querySelector('.media-player');
                 if (existingPlayer) {
                     existingPlayer.remove();
                 }
-                
-                // Adicionar novo player
                 const playerContainer = document.createElement('div');
                 playerContainer.className = 'media-player';
                 playerContainer.appendChild(media);
@@ -281,18 +274,8 @@ class AudioUploadManager {
         }
     }
     
-    /**
-     * deleteAudioFile(audioId) - Remove arquivo de áudio
-     * @param {number} audioId - ID do arquivo a remover
-     * 
-     * - Solicita confirmação do usuário
-     * - Remove arquivo via API /api/audio.php?action=delete&id={id}
-     * - Remove item da lista
-     * - Exibe mensagem se não houver mais arquivos
-     */
 
     async deleteAudioFile(audioId) {
-        // Remove arquivo via API e atualiza a lista
         if (!confirm('Tem certeza que deseja remover este arquivo?')) {
             return;
         }
@@ -305,13 +288,10 @@ class AudioUploadManager {
             const result = await response.json();
             
             if (result.success) {
-                // Remover item da lista
                 const fileItem = document.querySelector(`[data-id="${audioId}"].audio-file-item`);
                 if (fileItem) {
                     fileItem.remove();
                 }
-                
-                // Verificar se não há mais arquivos
                 const remainingFiles = document.querySelectorAll('.audio-file-item');
                 if (remainingFiles.length === 0) {
                     this.audioFilesContainer.innerHTML = '<p class="no-files">Nenhum arquivo de áudio enviado ainda</p>';
@@ -324,15 +304,7 @@ class AudioUploadManager {
             alert('Erro de conexão ao remover arquivo');
         }
     }
-    
-    /**
-     * formatFileSize(bytes) - Formata tamanho de arquivo
-     * @param {number} bytes - Tamanho em bytes
-     * @returns {string} Tamanho formatado (ex: "1.5 MB", "500 KB")
-     * 
-     * Converte bytes para unidades KB, MB e GB
-     * Usa base 1024 e mantém 2 casas decimais
-     */
+
 
     formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
@@ -343,7 +315,7 @@ class AudioUploadManager {
     }
 }
 
-// Inicializa quando a página carregar
+
 document.addEventListener('DOMContentLoaded', () => {
     window.audioUploadManager = new AudioUploadManager();
 });

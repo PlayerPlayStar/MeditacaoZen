@@ -1,9 +1,8 @@
-// Temporizador
 
 class MeditationTimer {
     constructor() {
         this.timeLeft = 15 * 60;
-        this.originalTime = 15 * 60; // Armazena o tempo original selecionado pelo usuário
+        this.originalTime = 15 * 60;
         this.isRunning = false;
         this.interval = null;
         this.sessionId = null;
@@ -13,10 +12,10 @@ class MeditationTimer {
         this.analyser = null;
         this.visualizerInterval = null;
         this.isAudioPaused = false;
-        this.sessionStarted = false; // Flag para controlar se a sessão foi iniciada
-        this.activeSessionUpdater = null; // Timer para atualizar sessões ativas
+        this.sessionStarted = false;
+        this.activeSessionUpdater = null;
         
-        // Estado de playlist do usuário
+        // playlist info
         this.userPlaylist = [];
         this.userPlaylistIndex = 0;
         this.selectedMusicType = 'none';
@@ -27,12 +26,10 @@ class MeditationTimer {
         this.initializeMusic();
         this.loadSavedColors();
         
-        // Verificar autenticação e carregar histórico
         this.checkAuthAndLoadSessions();
     }
     
     initializeElements() {
-        // Elementos principais
         this.minutesDisplay = document.getElementById('minutes');
         this.secondsDisplay = document.getElementById('seconds');
         this.startBtn = document.getElementById('start-btn');
@@ -40,19 +37,16 @@ class MeditationTimer {
         this.resetBtn = document.getElementById('reset-btn');
         this.presetBtns = document.querySelectorAll('.preset-btn');
         
-        // Elementos de áudio
         this.volumeSlider = document.getElementById('volume-slider');
         this.volumeDisplay = document.getElementById('volume-display');
         this.audioVisualizer = document.getElementById('audio-visualizer');
         this.visualizerBars = document.querySelectorAll('.visualizer-bar');
         
-        // Elementos de cor
         this.color1Picker = document.getElementById('color1-picker');
         this.color2Picker = document.getElementById('color2-picker');
         this.applyColorsBtn = document.getElementById('apply-colors-btn');
         this.resetColorsBtn = document.getElementById('reset-colors-btn');
         
-        // Debug: verificar se os elementos foram encontrados
         console.log('Elementos de cor encontrados:', {
             color1Picker: !!this.color1Picker,
             color2Picker: !!this.color2Picker,
@@ -60,18 +54,16 @@ class MeditationTimer {
             resetColorsBtn: !!this.resetColorsBtn
         });
 
-        // Seleciona a música clicada (sem tocar ainda)
+        // choose song to play
         const initialRadio = document.querySelector('input[name="background-music"]:checked');
         this.selectedMusicType = initialRadio ? initialRadio.value : 'none';
     }
     
     bindEvents() {
-        // Botões principais
         this.startBtn.addEventListener('click', () => this.start());
         this.pauseBtn.addEventListener('click', () => this.pause());
         this.resetBtn.addEventListener('click', () => this.reset());
         
-        // Presets
         this.presetBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const minutes = parseInt(e.target.dataset.time);
@@ -79,7 +71,6 @@ class MeditationTimer {
             });
         });
         
-        // Volume
         if (this.volumeSlider) {
             this.volumeSlider.addEventListener('input', (e) => {
                 this.volume = e.target.value / 100;
@@ -88,22 +79,18 @@ class MeditationTimer {
             });
         }
         
-        // Seleciona a música mas não toca se o timer estiver parado
         document.querySelectorAll('input[name="background-music"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 if (!e.target.checked) return;
                 this.selectedMusicType = e.target.value;
                 if (this.isRunning) {
-                    // Se o timer está rodando, trocar a música direto
                     this.startBackgroundMusic(this.selectedMusicType, true);
                 } else {
-                    // Timer parado = não toca nada
                     this.stopAllMusic();
                 }
             });
         });
         
-        // Controles de cor
         if (this.applyColorsBtn) {
             this.applyColorsBtn.addEventListener('click', () => this.applyCustomColors());
         }
@@ -112,26 +99,13 @@ class MeditationTimer {
         }
     }
     
-    /**
-     * setTime(seconds) - Define o tempo restante do timer
-     * @param {number} seconds - Tempo em segundos
-     * Atualiza o display assim que definir o novo tempo
-     */
+    // set, start, pause, reset timer
 
     setTime(seconds) {
         this.timeLeft = seconds;
-        this.originalTime = seconds; // Armazena o tempo original quando o usuário seleciona
+        this.originalTime = seconds;
         this.updateDisplay();
     }
-    
-    /**
-     * start() - Inicia o timer
-     * - Marca o timer como rodando
-     * - Faz uma contagem regressiva de 1 em 1 segundo
-     * - Cria sessão no banco de dados se ainda não foi criada
-     * - Inicia a música de fundo (se selecionada)
-     * - Aplica animação de fundo
-     */
 
     start() {
         if (this.isRunning) return;
@@ -140,30 +114,24 @@ class MeditationTimer {
         this.startBtn.style.display = 'none';
         this.pauseBtn.style.display = 'inline-block';
         
-        // Aplica classe de meditação ativa
         document.body.classList.add('meditation-active');
         
-        // Inicia sessão no banco de dados se ainda não foi iniciada
         if (!this.sessionStarted) {
             this.startSession();
             this.sessionStarted = true;
         } else if (this.sessionId) {
-            // Se já existe sessão mas estava pausada, reativa como "em andamento"
             this.reactivateSession();
         }
         
-        // Controla a música de fundo baseado no estado
         const selectedMusic = this.selectedMusicType && this.selectedMusicType !== 'none'
             ? { value: this.selectedMusicType }
             : null;
         
         if (selectedMusic && selectedMusic.value !== 'none') {
-            // Se já existe música pausada, retoma a mesma música de onde parou 
             if (this.userAudio && this.userAudio.paused && this.isAudioPaused) {
                 console.log('Retomando música existente');
                 this.resumeBackgroundMusic();
             } else if (!this.userAudio) {
-                // Se não existe música, inicia uma nova
                 console.log('Iniciando nova música');
                 this.startBackgroundMusic(selectedMusic.value, true);
             }
@@ -178,29 +146,16 @@ class MeditationTimer {
             }
         }, 1000);
         
-        // Adiciona classe para animação de fundo
         document.body.classList.add('meditation-active');
     }
-    
-    /**
-     * pause() - Pausa o timer
-     * - Para a contagem regressiva
-     * - Finaliza a sessão no banco de dados
-     * - Pausa a música de fundo
-     * - Remove a animação de fundo
-     */
+
 
     pause() {
         this.isRunning = false;
         clearInterval(this.interval);
         this.startBtn.style.display = 'inline-block';
         this.pauseBtn.style.display = 'none';
-        
-        // Remover classe de meditação ativa
         document.body.classList.remove('meditation-active');
-        
-        // Não interrompe sessão ao pausar - apenas pausa o timer
-        // Sessão continua como "em andamento" para poder ser retomada
         
         this.pauseBackgroundMusic();
         if (!this.isRunning) {
@@ -212,7 +167,7 @@ class MeditationTimer {
             }
         }
         
-        // Pausar música de fundo automaticamente quando timer pausa
+        // pause audio along with the timer
         if (this.userAudio && !this.userAudio.paused) {
             this.userAudio.pause();
             this.isAudioPaused = true;
@@ -223,44 +178,23 @@ class MeditationTimer {
         document.body.classList.remove('meditation-active');
     }
     
-    /**
-     * reset() - Reseta o timer para o valor padrão (15 minutos)
-     * - Pausa o timer se estiver rodando
-     * - Finaliza sessão no banco se existir
-     * - Para a música
-     * - Reseta todas as flags
-     */
-
     reset() {
         this.pause();
-        this.timeLeft = this.originalTime; // Usa o tempo original armazenado
+        this.timeLeft = this.originalTime;
         this.updateDisplay();
         
-        // Finalizar sessão ativa se existir
         if (this.sessionId) {
             this.interruptSession();
         }
         
-        // Limpar a música
         this.stopAllMusic();
-        
-        // Resetar flags de sessão
         this.sessionStarted = false;
         this.sessionId = null;
     }
     
-    /**
-     * stopAllMusic() - Para toda a música e limpa recursos de áudio
-     * - Para arquivos de áudio
-     * - Para sons sintéticos de fundo
-     * - Para visualizador de áudio
-     * - Remove controles de áudio da interface
-     */
 
     stopAllMusic() {
         console.log('Parando toda a música...');
-        
-        // Forçar parada de todos os elementos de áudio na página
         document.querySelectorAll('audio').forEach(audio => {
             audio.pause();
             audio.currentTime = 0;
@@ -268,7 +202,7 @@ class MeditationTimer {
         
         if (this.userAudio) {
             this.userAudio.pause();
-            this.userAudio.currentTime = 0; // Volta ao início
+            this.userAudio.currentTime = 0;
             this.userAudio = null;
         }
         
@@ -285,32 +219,19 @@ class MeditationTimer {
         
         console.log('Toda a música parada e limpa');
     }
-    
-    /**
-     * complete() - Finaliza a meditação quando o timer chega a zero
-     * - Pausa o timer
-     * - Para toda a música
-     * - Finaliza a sessão no banco de dados
-     * - Exibe alerta de conclusão
-     */
+
 
     complete() {
         this.pause();
         this.stopAllMusic();
-        
-        // Finalizar sessão no banco de dados
+
         this.completeSession();
         
-        // Resetar flags
+
         this.sessionStarted = false;
         
         alert('Meditação concluída!');
     }
-    
-    /**
-     * updateDisplay() - Atualiza a exibição do timer no formato MM:SS
-     * Converte segundos para minutos e segundos formatados
-     */
 
     updateDisplay() {
         const minutes = Math.floor(this.timeLeft / 60);
@@ -318,49 +239,29 @@ class MeditationTimer {
         this.minutesDisplay.textContent = minutes.toString().padStart(2, '0');
         this.secondsDisplay.textContent = seconds.toString().padStart(2, '0');
     }
-    
-    /**
-     * initializeMusic() - Inicializa os controles de música
-     * Define o volume inicial como 50% no display
-     */
+
 
     initializeMusic() {
         if (this.volumeDisplay) {
             this.volumeDisplay.textContent = '50%';
         }
     }
-    
-    /**
-     * startBackgroundMusic(type, force) - Inicia a música de fundo baseado na categoria
-     * @param {string} type - Tipo de música
-     * @param {boolean} force - Se true, inicia mesmo com timer parado (ex quando clica em iniciar)
-     * 
-     * Fluxo de busca de música:
-     * 1. Tenta arquivos do usuário (upload)
-     * 2. Tenta arquivos manuais (assets/audio/manual/)
-     * 3. Fallback para som sintético
-     */
 
     async startBackgroundMusic(type, force = false) {
         if (type === 'none') return;
         
-        // Parar todas as músicas de "Seus Áudios" antes de iniciar música de fundo
         if (window.audioUploadManager) {
             window.audioUploadManager.stopAllAudioPlayers();
         }
         
-        // Normalizar categorias para usar novos nomes
         const normalizeCategory = (t) => {
             if (!t) return t;
-            // Se já é um nome novo, retornar como está
-            if (['noite', 'calmaria', 'por do sol', 'custom', 'zen'].includes(t)) {
+            if (['noite', 'calmaria', 'por do sol', 'custom'].includes(t)) {
                 return t;
             }
-            // Retornar como está (sem conversão)
             return t;
         };
         const canonicalType = normalizeCategory(type);
-        // Não iniciar música se o timer estiver parado, a menos que seja forçado pelo start()
         if (!force && !this.isRunning) {
             this.selectedMusicType = type;
             console.log('Timer parado, não iniciando música agora');
@@ -369,14 +270,12 @@ class MeditationTimer {
         
         console.log(`Iniciando música de fundo para categoria: ${type} (canônica: ${canonicalType})`);
         
-        // Verificar se já existe música tocando
         if (this.userAudio && !this.userAudio.paused) {
             console.log('Música já está tocando, pausando antes de iniciar nova');
             this.pauseBackgroundMusic();
         }
         
         try {
-            // Tentar arquivo do usuário primeiro
             console.log('Buscando arquivos do usuário...');
             const userFiles = await this.getUserAudioFiles(canonicalType);
             if (userFiles.length > 0) {
@@ -385,22 +284,14 @@ class MeditationTimer {
                 return;
             }
             
-            // Tentar arquivo manual
             console.log('Buscando arquivos manuais...');
-            const manualFile = await this.getManualAudioFile(type); // API já aceita aliases novos
+            const manualFile = await this.getManualAudioFile(type);
             if (manualFile) {
                 console.log(`Arquivo manual encontrado: ${manualFile}`);
                 this.startManualAudio(manualFile);
                 return;
             }
             
-            // Fallback para som sintético
-            if (type === 'zen') {
-                console.log('Nenhum arquivo personalizado encontrado. Adicione seus arquivos de áudio na seção "Suas músicas"!');
-                // Para zen, não usar som sintético, apenas mostrar mensagem
-                this.showNoPersonalAudioMessage();
-                return;
-            }
             console.log('Usando som sintético como fallback');
             this.startSyntheticMusic(canonicalType);
             
@@ -410,25 +301,13 @@ class MeditationTimer {
         }
     }
     
-    /**
-     * startUserPlaylist(files, category) - Inicia a playlist de arquivos do usuário
-     * @param {Array} files - Array de objetos com informações dos arquivos de áudio
-     * @param {string} category - Categoria da música (para contexto)
-     * Monta a playlist e inicia a reprodução pela primeira faixa
-     */
+    // playlist and tracks
     startUserPlaylist(files, category) {
-        // Montar playlist e iniciar pela primeira faixa
         this.userPlaylist = files;
         this.userPlaylistIndex = 0;
         console.log('🎼 Iniciando playlist do usuário:', this.userPlaylist.map(f => f.title || f.original_name));
         this.playCurrentUserTrack(category);
     }
-
-    /**
-     * playCurrentUserTrack(category) - Reproduz a faixa atual da playlist do usuário
-     * @param {string} category - Categoria da música (para contexto)
-     * Usa o índice atual da playlist para tocar a faixa correspondente
-     */
     playCurrentUserTrack(category) {
         if (!this.userPlaylist || this.userPlaylist.length === 0) {
             console.log('Playlist vazia, abortando reprodução');
@@ -439,14 +318,6 @@ class MeditationTimer {
         this.startUserAudio(current, category);
     }
 
-    /**
-     * getUserAudioFiles(type) - Busca arquivos de áudio enviados pelo usuário
-     * @param {string} type - Tipo/categoria dos arquivos a buscar (nature, ocean, rain, zen)
-     * @returns {Array} Array de objetos com informações dos arquivos encontrados
-     * 
-     * Busca na API /api/audio.php?action=list e filtra por categoria.
-     * Para tipo 'zen', retorna todos os arquivos ativos do usuário.
-     */
     async getUserAudioFiles(type) {
         try {
             console.log(`Buscando arquivos do usuário para categoria: ${type}`);
@@ -457,29 +328,9 @@ class MeditationTimer {
             console.log('Resultado da API de áudio:', result);
             
             if (result.success) {
-                // Para categoria 'zen', buscar todos os arquivos do usuário (músicas personalizadas)
-                if (type === 'zen') {
-                    const isActive = (val) => {
-                        // Normalizar valores possíveis vindos do backend
-                        if (val === true) return true;
-                        if (val === false) return false;
-                        if (typeof val === 'number') return val === 1;
-                        if (typeof val === 'string') return val === '1' || val.toLowerCase() === 'true';
-                        return false;
-                    };
-                    const filteredFiles = result.files.filter(file => isActive(file.is_active));
-                    // Fallback: se nenhum ativo encontrado mas existem arquivos, retornar todos
-                    if (filteredFiles.length === 0 && result.files.length > 0) {
-                        console.log('Nenhum arquivo marcado como ativo; usando todos os arquivos do usuário como fallback');
-                        return result.files;
-                    }
-                    console.log(`Arquivos personalizados encontrados:`, filteredFiles);
-                    return filteredFiles;
-                }
-                // Normalizar categorias salvas para comparar
                 const normalizeType = (t) => {
                     if (!t) return t;
-                    if (['noite', 'calmaria', 'por do sol', 'custom', 'zen'].includes(t)) {
+                    if (['noite', 'calmaria', 'por do sol', 'custom'].includes(t)) {
                         return t;
                     }
                     return t;
@@ -495,18 +346,9 @@ class MeditationTimer {
         return [];
     }
     
-    /**
-     * getManualAudioFile(type) - Busca arquivo de áudio manual na pasta assets/audio/manual/
-     * @param {string} type - Tipo/categoria (noite, calmaria, pordosol)
-     * @returns {string|null} Caminho do arquivo encontrado ou null se não encontrado
-     * 
-     * Primeiro tenta buscar via API /api/manual-audio.php
-     * Se falhar, tenta busca direta com nomes comuns
-     */
     async getManualAudioFile(type) {
         console.log(`Buscando arquivo manual para categoria: ${type}`);
         
-        // Primeiro, tentar buscar lista de arquivos via API
         try {
             const apiUrl = `/api/manual-audio.php?category=${encodeURIComponent(type)}`;
             console.log(`Chamando API: ${apiUrl}`);
@@ -521,7 +363,6 @@ class MeditationTimer {
             console.log(`Resultado da API:`, result);
             
             if (result.success && result.files && result.files.length > 0) {
-                // Priorizar arquivos MP4 e MP3
                 const mp4Files = result.files.filter(file => file.extension === 'mp4');
                 const mp3Files = result.files.filter(file => file.extension === 'mp3');
                 const otherFiles = result.files.filter(file => !['mp4', 'mp3'].includes(file.extension));
@@ -541,11 +382,10 @@ class MeditationTimer {
             console.log('Continuando com busca direta...');
         }
         
-        // Fallback: tentar nomes comuns
-        const audioExtensions = ['mp4', 'mp3', 'wav', 'ogg', 'm4a']; // MP4 primeiro
-        const commonNames = ['audio', 'music', 'sound', 'noite', 'calmaria', 'zen']; // Apenas nomes atuais
+        // const by names and extensions
+        const audioExtensions = ['mp4', 'mp3', 'wav', 'ogg', 'm4a'];
+        const commonNames = ['audio', 'music', 'sound', 'noite', 'calmaria'];
         
-        // Mapeamento de type para pasta correta
         const folderMapping = {
             'noite': 'Noite',
             'calmaria': 'Calmaria',
@@ -563,7 +403,6 @@ class MeditationTimer {
                         return filePath;
             }
         } catch (error) {
-                    // Continuar tentando
                 }
             }
         }
@@ -571,27 +410,16 @@ class MeditationTimer {
         console.log(`Nenhum arquivo manual encontrado para categoria: ${type}`);
         return null;
     }
-    
-    /**
-     * startUserAudio(audioFile, categoryFromContext) - Reproduz arquivo de áudio do usuário
-     * @param {Object} audioFile - Objeto com informações do arquivo (id, title, etc)
-     * @param {string} categoryFromContext - Categoria da música
-     * 
-     * Configura visualizador de áudio quando o arquivo estiver pronto
-     * Avança para próxima música quando terminar (faz playlist).
-     */
 
     startUserAudio(audioFile, categoryFromContext) {
-        // Detectar Edge para configurações específicas
         const isEdge = /Edg/.test(navigator.userAgent);
         
         this.userAudio = new Audio(`/api/audio.php?action=get&id=${audioFile.id}`);
         this.userAudio.volume = this.volume;
-        // Desabilitar loop para permitir avançar para a próxima faixa
         this.userAudio.loop = false;
         this.userAudio.preload = 'auto';
         
-        // Configurações específicas para Edge
+        // edge-specific configurations
         if (isEdge) {
             this.userAudio.crossOrigin = 'anonymous';
             this.userAudio.controls = false;
@@ -600,7 +428,6 @@ class MeditationTimer {
         this.userAudio.addEventListener('loadeddata', () => {
             console.log('Arquivo do usuário carregado');
             
-            // Para Edge, tentar reproduzir após um pequeno delay
             if (isEdge) {
                 setTimeout(() => {
                     if (!this.isRunning) {
@@ -623,7 +450,6 @@ class MeditationTimer {
                     console.log('Arquivo do usuário reproduzindo');
                 }).catch(error => {
                     console.error('Erro ao reproduzir arquivo do usuário:', error);
-                    // Em caso de erro, tentar avançar para próxima faixa se existir
                     if (this.userPlaylist && this.userPlaylist.length > 1) {
                         this.advanceToNextTrack(categoryFromContext || audioFile.category);
                     } else {
@@ -662,7 +488,6 @@ class MeditationTimer {
         this.userAudio.addEventListener('ended', () => {
             console.log('Arquivo do usuário terminou');
             this.stopVisualizer();
-            // Avançar automaticamente para a próxima faixa se houver playlist
             if (this.userPlaylist && this.userPlaylist.length > 0) {
                 this.advanceToNextTrack(categoryFromContext || audioFile.category);
             }
@@ -678,33 +503,23 @@ class MeditationTimer {
         this.playCurrentUserTrack(category);
     }
     
-    /**
-     * startManualAudio(filePath) - Inicia reprodução da música
-     * @param {string} filePath - Caminho do arquivo (na pasta assets/audio/manual/)
-     * 
-     * Verifica se o arquivo existe antes de carregar
-     * Codifica o caminho para lidar com caracteres especiais
-     * Se arquivo não for encontrado, usa som sintético
-     */
 
     startManualAudio(filePath) {
         console.log(`Iniciando arquivo manual: ${filePath}`);
         
-        // Codificar o caminho para verificação
         const urlParts = filePath.split('/');
         const fileName = urlParts.pop();
         const basePath = urlParts.join('/');
         const encodedFileName = encodeURIComponent(fileName);
         const encodedPath = basePath + '/' + encodedFileName;
         
-        // Verificar se o arquivo existe primeiro
         fetch(encodedPath, { method: 'HEAD' })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Arquivo não encontrado: ${encodedPath} (Status: ${response.status})`);
                 }
                 console.log(`Arquivo manual verificado: ${encodedPath}`);
-                this.loadManualAudio(filePath); // Passar caminho original para loadManualAudio que faz a codificação
+                this.loadManualAudio(filePath);
             })
             .catch(error => {
                 console.error(`Erro ao verificar arquivo manual: ${encodedPath}`, error);
@@ -713,24 +528,12 @@ class MeditationTimer {
             });
     }
     
-    /**
-     * loadManualAudio(filePath) - Carrega e reproduz a música
-     * @param {string} filePath - Caminho do arquivo a ser carregado
-     * 
-     * Cria o elemento Audio, codifica o caminho para caracteres especiais,
-     * configura eventos (loadeddata, error, play, pause, ended),
-     * configura visualizador e inicia reprodução.
-     * Tem timeout de 10 segundos para evitar travamentos.
-     */
 
     loadManualAudio(filePath) {
         console.log(`Carregando arquivo manual: ${filePath}`);
         
-        // Detectar Edge para configurações específicas
         const isEdge = /Edg/.test(navigator.userAgent);
         
-        // Codifica o caminho para lidar com caracteres especiais (parênteses, espaços, etc)
-        // Separa base path e nome do arquivo para codificar apenas o nome
         const urlParts = filePath.split('/');
         const fileName = urlParts.pop();
         const basePath = urlParts.join('/');
@@ -745,13 +548,11 @@ class MeditationTimer {
         this.userAudio.loop = true;
         this.userAudio.preload = 'auto';
         
-        // Configurações específicas para o Edge
         if (isEdge) {
             this.userAudio.crossOrigin = 'anonymous';
             this.userAudio.controls = false;
         }
         
-        // Timeout para evitar travamentos
         const timeout = setTimeout(() => {
             console.error(`Timeout ao carregar arquivo manual: ${filePath}`);
             this.startSyntheticMusic('nature');
@@ -765,7 +566,6 @@ class MeditationTimer {
             clearTimeout(timeout);
             console.log(`Arquivo manual carregado: ${filePath}`);
             
-            // Para Edge, tentar reproduzir após um pequeno delay
             if (isEdge) {
                 setTimeout(() => {
                     this.userAudio.play().then(() => {
@@ -826,15 +626,6 @@ class MeditationTimer {
         this.userAudio.load();
     }
     
-    /**
-     * startSyntheticMusic(type) - Inicia som sintético
-     * @param {string} type - Tipo de som
-     * 
-     * Cria osciladores e moduladores para gerar sons de fundo sintéticos.
-     * Usado como fallback quando não há arquivos de áudio disponíveis.
-     * Configura visualizador e controles de áudio.
-     */
-
     startSyntheticMusic(type) {
         console.log(`Iniciando som sintético para: ${type}`);
         this.pauseBackgroundMusic();
@@ -852,25 +643,12 @@ class MeditationTimer {
             console.error('Erro ao criar som sintético:', error);
         }
     }
-    
-    /**
-     * createSyntheticSound(type) - Cria som sintético
-     * @param {string} type - Tipo de som
-     * @returns {Object} Objeto com osciladores e inicia/para o som
-     * 
-     * Cria múltiplos osciladores com frequências e tipos diferentes
-     * Adiciona modulação LFO para variação natural.
-     * Retorna objeto controlável para iniciar/parar o som
-     */
-
     createSyntheticSound(type) {
         console.log(`Criando som sintético para categoria: ${type}`);
-        
-        // Cria múltiplos osciladores para som mais rico
+
         const oscillators = [];
         const gainNodes = [];
         
-        // Configura frequências e tipos baseado no tipo
         const soundConfig = {
             'noite': [
                 { freq: 220, type: 'sine', gain: 0.05 },
@@ -886,30 +664,22 @@ class MeditationTimer {
                 { freq: 180, type: 'triangle', gain: 0.06 },
                 { freq: 270, type: 'triangle', gain: 0.04 },
                 { freq: 360, type: 'triangle', gain: 0.03 }
-            ],
-            'zen': [
-                { freq: 110, type: 'sine', gain: 0.03 },
-                { freq: 220, type: 'sine', gain: 0.02 },
-                { freq: 330, type: 'sine', gain: 0.01 }
             ]
         };
         
         const configs = soundConfig[type] || soundConfig['noite'];
         console.log(`🎼 Configuração de som para ${type}:`, configs);
         
-        // Cria osciladores
         configs.forEach((config, index) => {
             const oscillator = this.audioContext.createOscillator();
             const gainNode = this.audioContext.createGain();
             
             oscillator.connect(gainNode);
             gainNode.connect(this.audioContext.destination);
-            
             oscillator.frequency.setValueAtTime(config.freq, this.audioContext.currentTime);
             oscillator.type = config.type;
             gainNode.gain.setValueAtTime(config.gain, this.audioContext.currentTime);
-            
-            // Adiciona modulação suave
+
             const modulationFreq = config.freq * 0.1;
             const lfo = this.audioContext.createOscillator();
             const lfoGain = this.audioContext.createGain();
@@ -920,12 +690,11 @@ class MeditationTimer {
             
             lfo.connect(lfoGain);
             lfoGain.connect(oscillator.frequency);
-            
             oscillators.push(oscillator);
             gainNodes.push(gainNode);
         });
         
-        // Cria objeto que controla todos os osciladores
+        // oscillators control
         const soundGroup = {
             oscillators: oscillators,
             gainNodes: gainNodes,
@@ -937,7 +706,6 @@ class MeditationTimer {
                     try {
                         osc.stop();
                     } catch (e) {
-                        // Oscilador já parado
                     }
                 });
             }
@@ -948,40 +716,30 @@ class MeditationTimer {
         return soundGroup;
     }
     
-    /**
-     * setupAudioVisualizer() - Configura visualizador de áudio
-     * - Cria analisador de frequência (AnalyserNode)
-     * - Conecta fonte de áudio ao analisador
-     * - Configura FFT size e smoothing
-     * - Se falhar, usa visualizador simulado
-     */
 
     setupAudioVisualizer() {
         if (!this.audioContext || !this.userAudio) {
             console.log('AudioContext ou userAudio não disponível para visualizador');
             return;
         }
-        
-        // Detecta browser para compatibilidade
+
+        // browsers
         const isEdge = /Edg/.test(navigator.userAgent);
         const isChrome = /Chrome/.test(navigator.userAgent);
         
         console.log(`Configurando visualizador de áudio... (Browser: ${isEdge ? 'Edge' : isChrome ? 'Chrome' : 'Other'})`);
         
         try {
-            // Cria analisador com configurações otimizadas
             this.analyser = this.audioContext.createAnalyser();
-            this.analyser.fftSize = 256; // Maior precisão para detectar batidas
-            this.analyser.smoothingTimeConstant = 0.3; // Menos suavização para detectar batidas
+            this.analyser.fftSize = 256;
+            this.analyser.smoothingTimeConstant = 0.3;
             this.analyser.minDecibels = -90;
             this.analyser.maxDecibels = -10;
             
-            // Conecta áudio ao analisador
             const source = this.audioContext.createMediaElementSource(this.userAudio);
             source.connect(this.analyser);
             this.analyser.connect(this.audioContext.destination);
             
-            // Prepara array de dados
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
             
             console.log('Visualizador configurado com sucesso');
@@ -992,56 +750,32 @@ class MeditationTimer {
             this.startSimulatedVisualizer();
         }
     }
-    
-    /**
-     * startVisualizer() - Inicia loop de atualização do visualizador de áudio
-     * - Executa a cada 50ms para atualização
-     * - Obtém dados de frequência do analisador
-     * - Atualiza altura e cores das barras
-     * - Tem timeout de segurança para evitar loops infinitos
-     * - Para se o áudio pausar ou terminar
-     */
 
     startVisualizer() {
         console.log('Iniciando visualizador de áudio...');
-        
-        // Para qualquer visualizador existente
         this.stopVisualizer();
-        
-        // Verifica se áudio está realmente tocando
         if (!this.userAudio || this.userAudio.paused || this.userAudio.ended) {
-            console.log('Áudio não está tocando, não iniciando visualizador');
+            console.log('Áudio não está tocando');
             return;
         }
         
-        // Verifica se analisador existe
         if (!this.analyser) {
-            console.log('Analisador não disponível, não iniciando visualizador');
+            console.log('Analisador não disponível');
             return;
         }
         
-        // Inicia loop com dados reais (50ms de intervalo)
         this._startVisualizerLoop(50, 100, () => {
-            // Verificar se analyser ainda existe
             if (!this.analyser) {
                 this.stopVisualizer();
                 return;
             }
-            // Obter dados de frequência
             this.analyser.getByteFrequencyData(this.dataArray);
-            // Atualizar barras do visualizador
             this.updateVisualizerBars();
         }, 'Visualizador', true);
         
         console.log('Visualizador iniciado');
     }
     
-    /**
-     * startSimulatedVisualizer() - Inicia visualizador simulado
-     * - Simula movimento das barras usando funções matemáticas
-     * - Executa a cada 150ms
-     * - Tem timeout de segurança para evitar loops infinitos
-     */
 
     startSimulatedVisualizer() {
         console.log('Iniciando visualizador simulado...');
@@ -1981,52 +1715,10 @@ class MeditationTimer {
             this.activeSessionUpdater = null;
         }
     }
-    
-    /**
-     * showNoPersonalAudioMessage() - Exibe notificação quando não há arquivos personalizados
-     * - Cria elemento de notificação com estilo de vidro fosco
-     * - Exibe mensagem orientando usuário a fazer upload
-     * - Remove automaticamente após 5 segundos
-     * - Usado quando categoria 'zen' é selecionada sem arquivos
-     */
+}
 
-    showNoPersonalAudioMessage() {
-        // Criar notificação temporária
-        const notification = document.createElement('div');
-        notification.className = 'zen-notification';
-        notification.innerHTML = `
-            <div class="notification-content">
-                <h4>Música Personalizada</h4>
-                <p>Nenhuma música personalizada encontrada. Faça upload de seus arquivos de áudio na seção "Suas músicas" para usar música personalizada!</p>
-                <button onclick="this.parentElement.parentElement.remove()" class="btn btn-primary">Entendi</button>
-            </div>
-        `;
-        
-        // Adicionar estilos inline para a notificação
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            z-index: 1000;
-            max-width: 300px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Remove após 10 segundos
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 10000);
-    }
+class MeditationApp {
+    // ... restante do código ...
 }
 
 // Função global para alternar detalhes de sessão
