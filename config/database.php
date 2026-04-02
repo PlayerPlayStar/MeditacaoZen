@@ -44,7 +44,7 @@ $sql_audio_files = "CREATE TABLE IF NOT EXISTS audio_files (
     file_size INT NOT NULL,
     mime_type VARCHAR(100) NOT NULL,
     duration INT DEFAULT 0,
-    category ENUM('noite', 'por do sol', 'calmaria', 'custom') DEFAULT 'custom',
+    category ENUM('noite', 'calmaria', 'custom') DEFAULT 'custom',
     title VARCHAR(200),
     description TEXT,
     is_active TINYINT(1) DEFAULT 1,

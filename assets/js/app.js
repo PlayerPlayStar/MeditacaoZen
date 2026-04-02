@@ -1,9 +1,6 @@
-// Navegação, autenticação e AJAX
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log('app.js carregado');
     
-    // Navegação entre telas
     function showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(function(screen) {
             screen.classList.remove('active');
@@ -14,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Alterna entre login e registro
+    // register or login button
     const showRegisterBtn = document.getElementById('show-register');
     if (showRegisterBtn) {
         showRegisterBtn.addEventListener('click', function(e) {
@@ -45,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Fazr login
     async function login(email, password) {
         if (!email || !password) {
             alert('Por favor, preencha todos os campos');
@@ -68,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             
             if (result.success) {
-                // Redireciona para dashboard
                 window.location.href = '/dashboard.php';
                 return true;
             } else {
@@ -82,7 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Registrar usuário
     async function register(name, email, password) {
         if (!name || !email || !password) {
             alert('Por favor, preencha todos os campos');
@@ -106,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (result.success) {
                 alert('Usuário registrado com sucesso! Faça login.');
-                // Mostrar formulário de login
                 const loginForm = document.getElementById('login-form');
                 const registerForm = document.getElementById('register-form');
                 if (loginForm && registerForm) {
@@ -125,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Event listener para formulário de login
+    // login and register forms
     const loginFormContainer = document.getElementById('login-form');
     if (loginFormContainer) {
         const loginForm = loginFormContainer.querySelector('form');
@@ -136,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 console.log('Formulário de login submetido');
                 
-                // Buscar inputs diretamente do formulário
                 const formData = new FormData(loginForm);
                 const email = (formData.get('email') || '').trim();
                 const password = formData.get('password') || '';
@@ -158,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn('Container login-form não encontrado');
     }
 
-    // Event listener para formulário de registro
     const registerFormContainer = document.getElementById('register-form');
     if (registerFormContainer) {
         const registerForm = registerFormContainer.querySelector('form');
@@ -169,7 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 console.log('Formulário de registro submetido');
                 
-                // Buscar inputs diretamente do formulário
                 const formData = new FormData(registerForm);
                 const name = (formData.get('name') || '').trim();
                 const email = (formData.get('email') || '').trim();
@@ -189,7 +179,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn('Container register-form não encontrado');
     }
 
-    // Função para logout
+
+
     async function logout() {
         try {
             const response = await fetch('/api/auth.php?action=logout', {
@@ -210,22 +201,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return false;
     }
-
-    // Event listener para logout
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', logout);
     }
 });
 
-// Funcionalidades principais (apenas para dashboard)
+
+
 class MeditationApp {
     constructor() {
         this.initializeApp();
     }
     
     initializeApp() {
-        // Só carregar se estiver na página do dashboard
         if (!document.getElementById('sessions-list')) {
             return;
         }
@@ -234,7 +223,6 @@ class MeditationApp {
     }
     
     setupEventListeners() {
-        // Atualizar histórico quando o timer terminar de rodar
         if (window.meditationTimer) {
             window.meditationTimer.onComplete = () => {
                 this.loadSessionHistory();
@@ -243,7 +231,6 @@ class MeditationApp {
     }
     
     async loadSessionHistory() {
-        // Verificar se estamos na página correta antes de carregar
         if (!document.getElementById('sessions-list')) {
             return;
         }
@@ -260,7 +247,6 @@ class MeditationApp {
             });
             
             if (response.status === 401) {
-                // Usuário não autenticado, não fazer nada
                 return;
             }
             
@@ -273,7 +259,6 @@ class MeditationApp {
             }
             
         } catch (error) {
-            // Silenciar erros de autenticação na página de login
             if (!document.getElementById('sessions-list')) {
                 return;
             }
@@ -307,13 +292,11 @@ class MeditationApp {
         sessionsList.innerHTML = sessionsHtml;
     }
     
-    // Formatar duração para exibir em minutos
+    // format duration (in minutes)
     formatDuration(duration) {
         if (!duration || duration === '--:--:--') {
             return '0 minutos';
         }
-        
-        // Converter formato HH:MM:SS para minutos
         const parts = duration.split(':');
         const hours = parseInt(parts[0]) || 0;
         const minutes = parseInt(parts[1]) || 0;
@@ -342,8 +325,7 @@ class MeditationApp {
                 return status || 'Desconhecido';
         }
     }
-    
-    // Mostrar notificações
+
     showNotification(title, message, type = 'info') {
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification(title, {
@@ -351,15 +333,11 @@ class MeditationApp {
             });
         }
         
-        // Também mostrar no console pra debug
         console.log(`${title}: ${message}`);
     }
 }
 
-// Inicializa o app quando a página carregar (apenas se estiver no dashboard)
 document.addEventListener('DOMContentLoaded', () => {
-    // Só inicializa MeditationApp se estiver na página do dashboard
-    // Verificar se não estamos na página de login/registro
     setTimeout(() => {
         const isLoginPage = document.getElementById('login-form') || document.getElementById('register-form');
         const isDashboardPage = document.getElementById('meditation-timer') || document.getElementById('sessions-list');
@@ -369,7 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 100);
     
-    // Accordion para o histórico
     const accordionHeader = document.getElementById('history-accordion');
     const accordionContent = document.getElementById('history-content');
     
@@ -378,18 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const isActive = accordionHeader.classList.contains('active');
             
             if (isActive) {
-                // Fecha o accordion
                 accordionHeader.classList.remove('active');
                 accordionContent.classList.remove('active');
             } else {
-                // Abre o accordion
                 accordionHeader.classList.add('active');
                 accordionContent.classList.add('active');
             }
         });
     }
     
-    // Accordion para o upload de áudio
     const audioAccordionHeader = document.getElementById('audio-accordion');
     const audioAccordionContent = document.getElementById('audio-content');
     
@@ -398,11 +372,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const isActive = audioAccordionHeader.classList.contains('active');
             
             if (isActive) {
-                // Fecha o accordion
                 audioAccordionHeader.classList.remove('active');
                 audioAccordionContent.classList.remove('active');
             } else {
-                // Abre o accordion
                 audioAccordionHeader.classList.add('active');
                 audioAccordionContent.classList.add('active');
             }

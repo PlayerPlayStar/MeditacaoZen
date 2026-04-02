@@ -349,26 +349,15 @@ class MeditationTimer {
             window.audioUploadManager.stopAllAudioPlayers();
         }
         
-        // Normalizar categorias para usar novos nomes (compatibilidade com antigos)
+        // Normalizar categorias para usar novos nomes
         const normalizeCategory = (t) => {
             if (!t) return t;
-            // Mapear nomes antigos para novos
-            const oldToNew = {
-                'nature': 'noite',
-                'ocean': 'calmaria',
-                'rain': 'por do sol'
-            };
-            // Normalizar variações de "por do sol"
-            const porDoSolVariants = ['pordosol', 'por-do-sol', 'pôr-do-sol', 'por do sol'];
-            if (porDoSolVariants.includes(t.toLowerCase())) {
-                return 'por do sol';
-            }
             // Se já é um nome novo, retornar como está
             if (['noite', 'calmaria', 'por do sol', 'custom', 'zen'].includes(t)) {
                 return t;
             }
-            // Se é nome antigo, converter para novo
-            return oldToNew[t] || t;
+            // Retornar como está (sem conversão)
+            return t;
         };
         const canonicalType = normalizeCategory(type);
         // Não iniciar música se o timer estiver parado, a menos que seja forçado pelo start()
@@ -487,39 +476,13 @@ class MeditationTimer {
                     console.log(`Arquivos personalizados encontrados:`, filteredFiles);
                     return filteredFiles;
                 }
-                // Normalizar categorias salvas para comparar (suporta antigas e novas)
-                const normalizeForComparison = (c) => {
-                    if (!c) return c;
-                    // Mapear antigos para novos
-                    const oldToNew = {
-                        'nature': 'noite',
-                        'ocean': 'calmaria',
-                        'rain': 'por do sol'
-                    };
-                    // Normalizar variações
-                    const porDoSolVariants = ['pordosol', 'por-do-sol', 'pôr-do-sol', 'por do sol'];
-                    if (porDoSolVariants.includes(c.toLowerCase())) {
-                        return 'por do sol';
-                    }
-                    // Se é nome antigo, converter
-                    return oldToNew[c] || c;
-                };
-                // Normalizar o tipo recebido também
+                // Normalizar categorias salvas para comparar
                 const normalizeType = (t) => {
                     if (!t) return t;
-                    const oldToNew = {
-                        'nature': 'noite',
-                        'ocean': 'calmaria',
-                        'rain': 'por do sol'
-                    };
-                    const porDoSolVariants = ['pordosol', 'por-do-sol', 'pôr-do-sol', 'por do sol'];
-                    if (porDoSolVariants.includes(t.toLowerCase())) {
-                        return 'por do sol';
-                    }
                     if (['noite', 'calmaria', 'por do sol', 'custom', 'zen'].includes(t)) {
                         return t;
                     }
-                    return oldToNew[t] || t;
+                    return t;
                 };
                 const normalizedType = normalizeType(type);
                 return result.files.filter(file => normalizeForComparison(file.category) === normalizedType);
@@ -580,7 +543,7 @@ class MeditationTimer {
         
         // Fallback: tentar nomes comuns
         const audioExtensions = ['mp4', 'mp3', 'wav', 'ogg', 'm4a']; // MP4 primeiro
-        const commonNames = ['audio', 'music', 'sound', 'noite', 'calmaria', 'zen', 'nature', 'rain', 'ocean']; // Inclui novos e antigos para compatibilidade
+        const commonNames = ['audio', 'music', 'sound', 'noite', 'calmaria', 'zen']; // Apenas nomes atuais
         
         // Mapeamento de type para pasta correta
         const folderMapping = {
@@ -928,22 +891,6 @@ class MeditationTimer {
                 { freq: 110, type: 'sine', gain: 0.03 },
                 { freq: 220, type: 'sine', gain: 0.02 },
                 { freq: 330, type: 'sine', gain: 0.01 }
-            ],
-            // Compatibilidade com os nomes antigos
-            'nature': [
-                { freq: 220, type: 'sine', gain: 0.05 },
-                { freq: 330, type: 'sine', gain: 0.03 },
-                { freq: 440, type: 'sine', gain: 0.02 }
-            ],
-            'rain': [
-                { freq: 200, type: 'sawtooth', gain: 0.04 },
-                { freq: 300, type: 'sawtooth', gain: 0.03 },
-                { freq: 400, type: 'sawtooth', gain: 0.02 }
-            ],
-            'ocean': [
-                { freq: 180, type: 'triangle', gain: 0.06 },
-                { freq: 270, type: 'triangle', gain: 0.04 },
-                { freq: 360, type: 'triangle', gain: 0.03 }
             ]
         };
         
