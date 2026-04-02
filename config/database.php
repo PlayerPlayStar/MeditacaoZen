@@ -1,5 +1,4 @@
 <?php
-// Configuração do banco de dados
 define('DB_HOST', 'mysql');
 define('DB_NAME', 'meditacao_zen');
 define('DB_USER', 'meditacao_user');
@@ -8,14 +7,15 @@ define('DB_PASS', 'meditacao_pass');
 try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // Configurar charset para utf8mb4
+
+    // charset configuration
     $pdo->exec("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
     $pdo->exec("SET CHARACTER SET utf8mb4");
 } catch(PDOException $e) {
     die("Erro na conexão: " . $e->getMessage());
 }
 
-// Criar tabelas se não existirem
+// sql tables (create if not existent)
 $sql_users = "CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,

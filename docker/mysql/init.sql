@@ -1,6 +1,6 @@
 USE meditacao_zen;
 
-## TABELA USUÁRIOS ##
+/* tables */
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-## TABELA SESSÕES ##
+
 CREATE TABLE IF NOT EXISTS meditation_sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS meditation_sessions (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-## TABELA ARQUIVOS DE ÁUDIO ##
 CREATE TABLE IF NOT EXISTS audio_files (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -39,12 +38,11 @@ CREATE TABLE IF NOT EXISTS audio_files (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-## USUÁRIO DE TESTE ##
+/* test user */
 INSERT INTO users (name, email, password) VALUES 
 ('Teste', 'teste@meditacao.com', 'teste')
 ON DUPLICATE KEY UPDATE name = VALUES(name);
 
-## INDÍCES PARA MELHORAR A RESPOSTA ##
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_sessions_user_id ON meditation_sessions(user_id);
 CREATE INDEX idx_sessions_start_time ON meditation_sessions(start_time);

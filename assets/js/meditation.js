@@ -780,37 +780,27 @@ class MeditationTimer {
     startSimulatedVisualizer() {
         console.log('Iniciando visualizador simulado...');
         
-        // Para qualquer visualizador existente
         this.stopVisualizer();
         
-        // Verifica se áudio está realmente tocando
         if (!this.userAudio || this.userAudio.paused || this.userAudio.ended) {
             console.log('Áudio não está tocando, não iniciando visualizador simulado');
             return;
         }
         
-        // Inicia loop simulado (150ms de intervalo)
+
+        // visualizer loop and bars
+
         this._startVisualizerLoop(150, 50, () => {
             this.updateSimulatedVisualizer();
         }, 'Visualizador simulado');
         
         console.log('Visualizador simulado iniciado');
     }
-    
-    /**
-     * _startVisualizerLoop() - Loop interno
-     * @param {number} interval - Intervalo em ms
-     * @param {number} maxTimeouts - Número máximo de iterações
-     * @param {Function} updateFn - Função de atualização a ser chamada
-     * @param {string} name - Nome do visualizador para logs
-     * @param {boolean} requireAnalyser - Se true, verifica se analyser existe
-     */
 
     _startVisualizerLoop(interval, maxTimeouts, updateFn, name, requireAnalyser = false) {
         let timeoutCount = 0;
         
         this.visualizerInterval = setInterval(() => {
-            // Verificação rigorosa do estado do áudio
             const audioOk = this.userAudio && !this.userAudio.paused && !this.userAudio.ended;
             const analyserOk = !requireAnalyser || this.analyser;
             
@@ -818,34 +808,23 @@ class MeditationTimer {
                 try {
                     timeoutCount++;
                     
-                    // Parar se exceder limite de segurança
                     if (timeoutCount > maxTimeouts) {
                         console.warn(`${name} parado por segurança (timeout)`);
                         this.stopVisualizer();
                         return;
                     }
                     
-                    // Executar função de atualização
                     updateFn();
                 } catch (error) {
                     console.error(`Erro no ${name.toLowerCase()}:`, error);
                     this.stopVisualizer();
                 }
             } else {
-                // Se áudio parou, pausou ou terminou, para visualizador
-                console.log(`Áudio parou/pausou, parando ${name.toLowerCase()}...`);
+                console.log(`Áudio parou, parando ${name.toLowerCase()}...`);
                 this.stopVisualizer();
             }
         }, interval);
     }
-    
-    /**
-     * updateVisualizerBars() - Atualiza altura e cores das barras do visualizador
-     * - Divide frequências baixas-altas para variedade de cores
-     * - Calcula altura baseada em dados reais de frequência
-     * - Aplica cores baseadas na intensidade
-     * - Usa transições suaves para movimento natural
-     */
 
     updateVisualizerBars() {
         if (!this.visualizerBars || this.visualizerBars.length === 0) {
@@ -853,7 +832,6 @@ class MeditationTimer {
             return;
         }
         
-        // Calcular intensidade geral do áudio
         let totalIntensity = 0;
         for (let i = 0; i < this.dataArray.length; i++) {
             totalIntensity += this.dataArray[i];
@@ -861,59 +839,47 @@ class MeditationTimer {
         const averageIntensity = totalIntensity / this.dataArray.length;
         
         this.visualizerBars.forEach((bar, index) => {
-            // Usar dados de frequência reais com diferentes faixas
             let frequency = 0;
             
-            // Dividir frequências em faixas para diferentes barras
             if (index < this.visualizerBars.length / 3) {
-                // Baixas frequências (bass) - barras da esquerda
+                // low frequency
                 frequency = this.dataArray[Math.floor(index * 2)] || 0;
             } else if (index < (this.visualizerBars.length * 2) / 3) {
-                // Médias frequências (mid) - barras do meio
+                // mid frequency
                 frequency = this.dataArray[Math.floor(index * 1.5) + 8] || 0;
             } else {
-                // Altas frequências (treble) - barras da direita
+                // high frequency
                 frequency = this.dataArray[Math.floor(index * 1.2) + 16] || 0;
             }
             
-            // Calcular altura baseada na frequência real
             const normalizedFreq = frequency / 255;
             const baseHeight = Math.max(4, normalizedFreq * 80 + 4);
             
-            // Adicionar variação baseada na intensidade geral
             const intensityMultiplier = 1 + (averageIntensity / 255) * 0.3;
             const height = Math.min(100, baseHeight * intensityMultiplier);
             
-            // Aplicar transição suave para movimento natural
             bar.style.transition = 'height 0.1s ease-out, background-color 0.1s ease-out';
             bar.style.height = height + 'px';
             
-            // Cores baseadas na frequência
             const intensity = normalizedFreq;
             let hue;
             if (index < this.visualizerBars.length / 3) {
-                // Baixas frequências (vermelho/laranja)
+                // low frequency
                 hue = (intensity * 60) + 0;
             } else if (index < (this.visualizerBars.length * 2) / 3) {
-                // Médias frequências (amarelo/verde)
+                // mid frequency
                 hue = (intensity * 60) + 60;
             } else {
-                // Altas frequências (azul/roxo)
+                // high frequency
                 hue = (intensity * 60) + 180;
             }
             
-            const saturation = 70 + (intensity * 30); // 70-100%
-            const lightness = 60 + (intensity * 20);   // 60-80%
+            const saturation = 70 + (intensity * 30);
+            const lightness = 60 + (intensity * 20);
             bar.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
         });
     }
-    
-    /**
-     * updateSimulatedVisualizer() - Atualiza barras do visualizador simulado
-     * - Usa funções seno e cosseno para simular movimento
-     * - Adiciona variação aleatória para naturalidade
-     * - Aplica cores baseadas em tempo e índice
-     */
+
 
     updateSimulatedVisualizer() {
         if (!this.visualizerBars || this.visualizerBars.length === 0) {
@@ -921,7 +887,6 @@ class MeditationTimer {
         }
         
         this.visualizerBars.forEach((bar, index) => {
-            // Simular movimento baseado em padrão mais realista
             const time = Date.now() * 0.001;
             const frequency = 0.5 + (index * 0.1);
             const amplitude = 30 + Math.sin(time * frequency) * 20;
@@ -931,37 +896,25 @@ class MeditationTimer {
             bar.style.transition = 'height 0.1s ease-out';
             bar.style.height = height + 'px';
             
-            // Adicionar cores
             const hue = (index * 30 + time * 50) % 360;
             bar.style.backgroundColor = `hsl(${hue}, 70%, 60%)`;
         });
     }
-    
-    /**
-     * stopVisualizer() - Para o visualizador e limpa recursos
-     * - Para o intervalo de atualização
-     * - Reseta todas as barras para altura mínima
-     * - Limpa dados de frequência e analisador
-     */
 
     stopVisualizer() {
         console.log('Parando visualizador...');
         
-        // Parar intervalo
         if (this.visualizerInterval) {
             clearInterval(this.visualizerInterval);
             this.visualizerInterval = null;
         }
         
-        // Reduzir todas as barras para altura mínima
         this.resetVisualizerBars();
         
-        // Limpar dados de frequência
         if (this.dataArray) {
             this.dataArray.fill(0);
         }
         
-        // Limpar analisador
         if (this.analyser) {
             this.analyser = null;
         }
@@ -969,45 +922,26 @@ class MeditationTimer {
         console.log('Visualizador parado');
     }
     
-    /**
-     * resetVisualizerBars() - Reseta todas as barras do visualizador
-     * - Define altura mínima (4px) imediatamente
-     * - Remove transições para reset instantâneo
-     * - Define cor padrão azul
-     * - Força reflow para aplicar mudanças imediatamente
-     */
-
     resetVisualizerBars() {
         if (!this.visualizerBars || this.visualizerBars.length === 0) {
             return;
         }
         
         this.visualizerBars.forEach((bar, index) => {
-            // Parar animação imediatamente
             bar.style.transition = 'none';
             bar.style.height = '4px';
             bar.style.backgroundColor = '#4a90e2'; // Cor padrão azul
             
-            // Forçar reflow para aplicar mudanças imediatamente
             bar.offsetHeight;
         });
     }
     
-    /**
-     * fadeVisualizerBars() - Reduz altura das barras gradualmente
-     * - Usado quando pausando o áudio
-     * - Reduz altura em 20% a cada chamada
-     * - Mantém altura mínima de 4px
-     * - Usa transição suave para efeito visual
-     */
-
     fadeVisualizerBars() {
         if (!this.visualizerBars || this.visualizerBars.length === 0) {
             return;
         }
         
         this.visualizerBars.forEach((bar, index) => {
-            // Reduzir altura gradualmente quando pausado
             const currentHeight = parseInt(bar.style.height) || 50;
             const newHeight = Math.max(4, currentHeight * 0.8);
             
@@ -1016,37 +950,19 @@ class MeditationTimer {
         });
     }
     
-    
-    /**
-     * showAudioControls() - Exibe os controles de áudio (visualizador)
-     * Mostra o elemento do visualizador na interface
-     */
-
+    // audio controls
     showAudioControls() {
         if (this.audioVisualizer) {
             this.audioVisualizer.style.display = 'block';
         }
     }
-    
-    /**
-     * hideAudioControls() - Esconde os controles de áudio (visualizador)
-     * Oculta o elemento do visualizador da interface
-     */
 
     hideAudioControls() {
         if (this.audioVisualizer) {
             this.audioVisualizer.style.display = 'none';
         }
     }
-    
-    
-    /**
-     * pauseBackgroundMusic() - Pausa a música de fundo
-     * - Pausa arquivo de áudio do usuário se existir
-     * - Para sons sintéticos se estiverem tocando
-     * - Esconde controles de áudio
-     * - Para o visualizador completamente
-     */
+
 
     pauseBackgroundMusic() {
         console.log('Pausando música de fundo...');
@@ -1063,18 +979,11 @@ class MeditationTimer {
             }
             this.backgroundMusic = null;
         }
-        
-        // Parar visualizador completamente
         this.stopVisualizer();
         
         console.log('Música de fundo pausada');
     }
-    
-    /**
-     * resumeBackgroundMusic() - Retoma a música de fundo pausada
-     * - Retoma reprodução do arquivo de áudio
-     * - Configura visualizador
-     */
+
 
     resumeBackgroundMusic() {
         console.log('Retomando música de fundo...');
@@ -1103,150 +1012,97 @@ class MeditationTimer {
             }
         }
     }
-    
-    /**
-     * applyCustomColors() - Aplica cores personalizadas ao fundo
-     * - Obtém cores dos seletores
-     * - Aplica gradiente linear ao body
-     * - Define variáveis CSS para consistência
-     * - Salva cores no localStorage para persistência
-     */
 
     applyCustomColors() {
         const color1 = this.color1Picker.value;
         const color2 = this.color2Picker.value;
         
-        console.log('=== APLICANDO CORES PERSONALIZADAS ===');
-        console.log('Cores selecionadas:', color1, '→', color2);
+        console.log('Cores personalizadas selecionadas:', color1, '→', color2);
         
-        // Verificar se os elementos existem
         if (!this.color1Picker || !this.color2Picker) {
             console.error('Seletores de cor não encontrados!');
             return;
         }
         
-        // Aplicar gradiente diretamente
+        // gradient custom colors
         const gradient = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
         document.body.style.background = gradient;
         document.body.style.backgroundSize = '200% 200%';
         document.body.style.animation = 'gradientMove 16s ease-in-out infinite';
         
-        // Definir variáveis CSS para consistência
         document.documentElement.style.setProperty('--color1', color1);
         document.documentElement.style.setProperty('--color2', color2);
         
-        // Adicionar classe para indicar cores personalizadas
         document.body.classList.add('custom-colors');
         
         console.log('Gradiente aplicado:', gradient);
         
-        // Salvar cores no localStorage
         localStorage.setItem('customColor1', color1);
         localStorage.setItem('customColor2', color2);
         
         console.log('Cores aplicadas ao gradiente linear com sucesso!');
     }
     
-    // Resetar cores para padrão
-    /**
-     * resetColors() - Reseta cores para valores padrão
-     * - Remove cores personalizadas
-     * - Restaura cores padrão do gradiente (#667eea → #764ba2)
-     * - Remove dados do localStorage
-     * - Atualiza seletores e variáveis CSS
-     */
-
     resetColors() {
         console.log('Resetando cores para padrão do gradiente linear');
         
-        // Cores padrão do gradiente linear
         const defaultColor1 = '#667eea';
         const defaultColor2 = '#764ba2';
         
-        // Atualizar seletores
         this.color1Picker.value = defaultColor1;
         this.color2Picker.value = defaultColor2;
         
-        // Remover classe custom-colors
         document.body.classList.remove('custom-colors');
         
-        // Aplicar cores padrão via variáveis CSS
         document.documentElement.style.setProperty('--color1', defaultColor1);
         document.documentElement.style.setProperty('--color2', defaultColor2);
         
-        // Limpar localStorage
         localStorage.removeItem('customColor1');
         localStorage.removeItem('customColor2');
         
         console.log('Cores resetadas para padrão do gradiente linear!');
     }
-    
-    /**
-     * loadSavedColors() - Carrega cores personalizadas salvas
-     * - Busca cores no localStorage
-     * - Aplica cores se encontradas, senão usa padrão
-     * - Atualiza seletores e variáveis CSS
-     * - Adiciona classe custom-colors se aplicável
-     */
+
 
     loadSavedColors() {
         const savedColor1 = localStorage.getItem('customColor1');
-        const savedColor2 = localStorage.getItem('customColor2');
-        
-        console.log('📁 Verificando cores salvas:', { savedColor1, savedColor2 });
-        
+        const savedColor2 = localStorage.getItem('customColor2');        
         let color1, color2;
         
         if (savedColor1 && savedColor2) {
-            console.log('📁 Carregando cores personalizadas para gradiente linear:', savedColor1, '→', savedColor2);
             color1 = savedColor1;
             color2 = savedColor2;
             
-            // Atualizar seletores
             this.color1Picker.value = savedColor1;
             this.color2Picker.value = savedColor2;
             
-            // Adicionar classe para cores personalizadas
             document.body.classList.add('custom-colors');
         } else {
-            console.log('📁 Nenhuma cor salva encontrada, aplicando cores padrão');
             color1 = '#667eea';
             color2 = '#764ba2';
             
-            // Remover classe custom-colors se existir
             document.body.classList.remove('custom-colors');
         }
         
-        // Aplicar cores via variáveis CSS
         document.documentElement.style.setProperty('--color1', color1);
         document.documentElement.style.setProperty('--color2', color2);
         
-        // Forçar reflow
         document.body.offsetHeight;
         
-        // Verificar o background final
         setTimeout(() => {
             const finalBackground = getComputedStyle(document.body).getPropertyValue('background');
             console.log('Background final após carregamento:', finalBackground);
         }, 100);
     }
     
-    /**
-     * startSession() - Inicia uma nova sessão de meditação no banco de dados
-     * - Cria registro de sessão via API /api/sessions.php
-     * - Armazena session_id para finalização posterior
-     * - Usa timezone de Brasília
-     * - Recarrega página se usuário não estiver autenticado
-     */
 
     async startSession() {
         console.log('🚀 Iniciando nova sessão...');
         
         try {
-            const duration = Math.floor(this.timeLeft / 60); // Duração em minutos
+            const duration = Math.floor(this.timeLeft / 60);
             const now = new Date();
             
-            // Converter para timezone de Brasília (UTC-3)
             const brasiliaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
             const brasiliaISO = brasiliaTime.toISOString();
             
@@ -1292,13 +1148,6 @@ class MeditationTimer {
         }
     }
     
-    /**
-     * completeSession() - Finaliza a sessão de meditação no banco de dados
-     * - Envia end_time via API /api/sessions.php
-     * - Usa timezone de Brasília
-     * - Recarrega histórico de sessões após finalização
-     * - Limpa sessionId após sucesso
-     */
 
     async completeSession() {
         if (!this.sessionId) {
@@ -1311,7 +1160,7 @@ class MeditationTimer {
         try {
             const now = new Date();
             
-            // Converter para timezone de Brasília (UTC-3)
+            // convert to Brasília time
             const brasiliaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
             const brasiliaISO = brasiliaTime.toISOString();
             
@@ -1345,7 +1194,6 @@ class MeditationTimer {
                 console.log('Horário de fim:', result.end_time);
                 this.sessionId = null;
                 
-                // Recarregar histórico de sessões
                 setTimeout(() => {
                     this.loadSessions();
                 }, 1000);
@@ -1356,15 +1204,6 @@ class MeditationTimer {
             console.error('Erro de conexão ao finalizar sessão:', error);
         }
     }
-    
-    /**
-     * interruptSession() - Interrompe a sessão de meditação no banco de dados
-     * - Envia end_time via API /api/sessions.php
-     * - Usa timezone de Brasília
-     * - Define status como 'interrupted' em vez de 'completed'
-     * - Recarrega histórico de sessões após interrupção
-     * - Limpa sessionId após sucesso
-     */
 
     async interruptSession() {
         if (!this.sessionId) {
@@ -1377,7 +1216,7 @@ class MeditationTimer {
         try {
             const now = new Date();
             
-            // Converter para timezone de Brasília (UTC-3)
+            // convert to Brasilia time
             const brasiliaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
             const brasiliaISO = brasiliaTime.toISOString();
             
@@ -1411,7 +1250,7 @@ class MeditationTimer {
                 console.log('Horário de fim:', result.end_time);
                 this.sessionId = null;
                 
-                // Recarregar histórico de sessões
+                // session timeout
                 setTimeout(() => {
                     this.loadSessions();
                 }, 1000);
@@ -1422,13 +1261,6 @@ class MeditationTimer {
             console.error('Erro de conexão ao interromper sessão:', error);
         }
     }
-    
-    /**
-     * reactivateSession() - Reativa uma sessão interrompida para "em andamento"
-     * - Atualiza status de 'interrupted' para 'active'
-     - Limpa end_time para indicar que está em andamento
-     * - Usada quando usuário retoma timer pausado
-     */
 
     async reactivateSession() {
         if (!this.sessionId) {
@@ -1458,7 +1290,6 @@ class MeditationTimer {
             
             if (result.success) {
                 console.log('Sessão reativada com sucesso!');
-                // Recarregar histórico de sessões
                 setTimeout(() => {
                     this.loadSessions();
                 }, 1000);
@@ -1469,31 +1300,14 @@ class MeditationTimer {
             console.error('Erro de conexão ao reativar sessão:', error);
         }
     }
-    
-    /**
-     * checkAuthAndLoadSessions() - Verifica autenticação e carrega histórico de sessões
-     * - Tenta carregar sessões para verificar se usuário está autenticado
-     * - Usado na inicialização da classe
-     * - Trata erros de autenticação silenciosamente
-     */
 
     async checkAuthAndLoadSessions() {
         try {
-            // Primeiro, tentar carregar sessões para verificar se está autenticado
             await this.loadSessions();
         } catch (error) {
             console.error('Erro ao verificar autenticação:', error);
-            // Se não conseguir carregar, pode ser problema de autenticação
         }
     }
-    
-    /**
-     * loadSessions() - Carrega histórico de sessões do usuário
-     * - Busca sessões via API /api/sessions.php?action=list
-     * - Exibe sessões na interface usando displaySessions()
-     * - Recarrega página se usuário não estiver autenticado
-     * - Trata erros de conexão
-     */
 
     async loadSessions() {
         console.log('Carregando histórico de sessões...');
@@ -1530,20 +1344,12 @@ class MeditationTimer {
         }
     }
     
-    /**
-     * formatDuration(duration) - Formata duração de sessão para exibição
-     * @param {string} duration - Duração no formato HH:MM:SS ou '--:--:--'
-     * @returns {string} Duração formatada em minutos (ex: "15 minutos")
-     * 
-     * Converte formato HH:MM:SS para minutos totais.
-     * Trata casos especiais (0 minutos, 1 minuto, plural).
-     */
+    // session duration infos
     formatDuration(duration) {
         if (!duration || duration === '--:--:--') {
             return '0 minutos';
         }
         
-        // Converter formato HH:MM:SS para minutos
         const parts = duration.split(':');
         const hours = parseInt(parts[0]) || 0;
         const minutes = parseInt(parts[1]) || 0;
@@ -1560,15 +1366,6 @@ class MeditationTimer {
         }
     }
 
-    /**
-     * displaySessions(sessions) - Exibe sessões na lista do histórico
-     * @param {Array} sessions - Array de objetos com dados das sessões
-     * 
-     * - Diferencia sessões ativas das completadas
-     * - Exibe mensagem se não houver sessões
-     * - Renderiza cards com informações de cada sessão
-     */
-
     displaySessions(sessions) {
         const sessionsList = document.getElementById('sessions-list');
         if (!sessionsList) return;
@@ -1579,13 +1376,10 @@ class MeditationTimer {
         }
         
         sessionsList.innerHTML = sessions.map(session => {
-            // Usar timezone de Brasília para formatar a data
             let formattedDate = session.formatted_date;
             
-            // Para sessões ativas, usar horário atual de Brasília
             if (session.status === 'active' && session.is_active) {
                 const now = new Date();
-                // Converter para timezone de Brasília
                 const brasiliaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
                 formattedDate = brasiliaTime.toLocaleString('pt-BR', {
                     day: '2-digit',
@@ -1596,7 +1390,6 @@ class MeditationTimer {
                     timeZone: 'America/Sao_Paulo'
                 });
             } else if (session.start_time_iso) {
-                // Para sessões concluídas, usar o horário original
                 const sessionDate = new Date(session.start_time_iso);
                 formattedDate = sessionDate.toLocaleString('pt-BR', {
                     day: '2-digit',
@@ -1607,11 +1400,9 @@ class MeditationTimer {
                     timeZone: 'America/Sao_Paulo'
                 });
             } else if (session.formatted_date_pt) {
-                // Usar data formatada do servidor
                 formattedDate = session.formatted_date_pt;
             }
             
-            // Determinar status e ícone
             let statusText, statusClass, statusIcon;
             
             switch (session.status) {
@@ -1636,6 +1427,7 @@ class MeditationTimer {
                     statusIcon = '';
             }
             
+            // div classes
             return `
                 <div class="session-item collapsed ${statusClass}" data-session-id="${session.id}">
                     <div class="session-item-header" onclick="toggleSessionDetails(${session.id})">
@@ -1670,7 +1462,6 @@ class MeditationTimer {
             `;
         }).join('');
         
-        // Se tem sessões ativas, atualizar o horário a cada minuto
         const hasActiveSessions = sessions.some(session => session.status === 'active');
         if (hasActiveSessions) {
             this.startActiveSessionUpdater();
@@ -1679,20 +1470,17 @@ class MeditationTimer {
         }
     }
     
-    // Atualiza horário de sessões ativas
     startActiveSessionUpdater() {
         if (this.activeSessionUpdater) {
             clearInterval(this.activeSessionUpdater);
         }
         
-        // Adicionar timeout de segurança
         let updateCount = 0;
-        const maxUpdates = 20; // Máximo de 10 minutos (20 * 30s)
+        const maxUpdates = 20;
         
         this.activeSessionUpdater = setInterval(() => {
             updateCount++;
             
-            // Parar se exceder limite de segurança
             if (updateCount > maxUpdates) {
                 console.log('⏰ Atualizador de sessões parado por segurança');
                 this.stopActiveSessionUpdater();
@@ -1700,15 +1488,14 @@ class MeditationTimer {
             }
             
             try {
-                this.loadSessions(); // Recarregar sessões para atualizar horário
+                this.loadSessions();
             } catch (error) {
                 console.error('Erro ao atualizar sessões:', error);
                 this.stopActiveSessionUpdater();
             }
-        }, 30000); // Atualizar a cada 30 segundos para sessões ativas
+        }, 30000);
     }
     
-    // Parar atualização de sessões ativas
     stopActiveSessionUpdater() {
         if (this.activeSessionUpdater) {
             clearInterval(this.activeSessionUpdater);
@@ -1717,11 +1504,7 @@ class MeditationTimer {
     }
 }
 
-class MeditationApp {
-    // ... restante do código ...
-}
 
-// Função global para alternar detalhes de sessão
 window.toggleSessionDetails = function(sessionId) {
     const sessionElement = document.querySelector(`[data-session-id="${sessionId}"]`);
     if (!sessionElement) return;
@@ -1729,38 +1512,31 @@ window.toggleSessionDetails = function(sessionId) {
     const isCollapsed = sessionElement.classList.contains('collapsed');
     
     if (isCollapsed) {
-        // Expandir sessão
         sessionElement.classList.remove('collapsed');
         sessionElement.classList.add('expanded');
     } else {
-        // Colapsar sessão
         sessionElement.classList.remove('expanded');
         sessionElement.classList.add('collapsed');
     }
 };
 
-// Inicializa quando o DOM estiver pronto
+
 document.addEventListener('DOMContentLoaded', () => {
     const timer = new MeditationTimer();
     
-    // Expoe timer globalmente para debug
     window.meditationTimer = timer;
     console.log('Timer exposto globalmente como window.meditationTimer');
     
-    // Força limpeza do background na inicialização
     timer.forceBackgroundCleanup();
     
-    // Carregar histórico de sessões
     timer.loadSessions();
     
-    // Executa limpeza com timeout de segurança
     let cleanupCount = 0;
-    const maxCleanups = 100; // Máximo de 8 minutos (100 * 5s)
+    const maxCleanups = 100;
     
     const cleanupInterval = setInterval(() => {
         cleanupCount++;
         
-        // Para limpeza automática após limite de segurança
         if (cleanupCount > maxCleanups) {
             console.log('Limpeza automática parada por segurança');
             clearInterval(cleanupInterval);

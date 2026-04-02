@@ -1,17 +1,15 @@
 <?php
-// Configurações de upload de arquivos
 ini_set('upload_max_filesize', '50M');
 ini_set('post_max_size', '50M');
 ini_set('max_execution_time', 300);
 ini_set('max_input_time', 300);
 ini_set('memory_limit', '256M');
 
-// Configurações de erro pra debug
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Função pra verificar configurações de upload
+// check upload configuration
 function checkUploadConfig() {
     $config = [
         'upload_max_filesize' => ini_get('upload_max_filesize'),
@@ -25,7 +23,6 @@ function checkUploadConfig() {
     return $config;
 }
 
-// Função para converter tamanho para bytes
 function parseSize($size) {
     $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
     $size = preg_replace('/[^0-9\.]/', '', $size);
@@ -36,7 +33,6 @@ function parseSize($size) {
     }
 }
 
-// Verificar se as configurações estão ok
 function validateUploadConfig() {
     $config = checkUploadConfig();
     $maxUpload = parseSize($config['upload_max_filesize']);
@@ -44,11 +40,11 @@ function validateUploadConfig() {
     
     $issues = [];
     
-    if ($maxUpload < 50 * 1024 * 1024) { // 50MB
+    if ($maxUpload < 50 * 1024 * 1024) {
         $issues[] = "upload_max_filesize muito baixo: {$config['upload_max_filesize']}";
     }
     
-    if ($maxPost < 50 * 1024 * 1024) { // 50MB
+    if ($maxPost < 50 * 1024 * 1024) {
         $issues[] = "post_max_size muito baixo: {$config['post_max_size']}";
     }
     
