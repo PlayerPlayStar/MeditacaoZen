@@ -1,5 +1,6 @@
 services:
-  # Serviço MySQL
+
+# mysql
   mysql:
     image: mysql:8.0
     container_name: meditacao_mysql
@@ -21,7 +22,7 @@ services:
       timeout: 20s
       retries: 10
 
-  # Serviço PHP/Apache
+  # php/apache
   app:
     build:
       context: ..
@@ -44,23 +45,6 @@ services:
       - MYSQL_PASSWORD=meditacao_pass
     networks:
       - meditacao_network
-
-  # Serviço phpMyAdmin (opcional) - DESABILITADO
-  # phpmyadmin:
-  #   image: phpmyadmin/phpmyadmin
-  #   container_name: meditacao_phpmyadmin
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8081:80"
-  #   environment:
-  #     PMA_HOST: mysql
-  #     PMA_PORT: 3306
-  #     PMA_USER: meditacao_user
-  #     PMA_PASSWORD: meditacao_pass
-  #   depends_on:
-  #     - mysql
-  #   networks:
-  #     - meditacao_network
 
 volumes:
   mysql_data:

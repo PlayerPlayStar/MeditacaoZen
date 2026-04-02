@@ -2,21 +2,19 @@
 session_start();
 require_once __DIR__ . '/../config/database.php';
 
-//REGISTRAR USUÁRIO NO SITE
+// registration and login
+
 function registerUser($name, $email, $password) {
     global $pdo;
     
-    //VERIFICA SE EMAIL JÁ EXISTE
     $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
         return ['success' => false, 'message' => 'Email já cadastrado!'];
     }
     
-    //HASH DA SENHA
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     
-    //INSERIR USUÁRIO NO BANCO DE DADOS
     $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
     if ($stmt->execute([$name, $email, $hashedPassword])) {
         return ['success' => true, 'message' => 'Usuário registrado com sucesso!'];
@@ -25,7 +23,6 @@ function registerUser($name, $email, $password) {
     }
 }
 
-//FUNÇÃO PRA FAZER LOGIN NO SITE
 function loginUser($email, $password) {
     global $pdo;
     
@@ -43,18 +40,15 @@ function loginUser($email, $password) {
     }
 }
 
-//VERIFICA SE USUÁRIO ESTÁ LOGADO
 function isLoggedIn() {
     return isset($_SESSION['user_id']);
 }
 
-//LOGOUT
 function logout() {
     session_destroy();
     return ['success' => true, 'message' => 'Logout realizado com sucesso!'];
 }
 
-//OBTER DADOS DO USER LOGADO
 function getCurrentUser() {
     if (isLoggedIn()) {
         return [
