@@ -1,6 +1,6 @@
 ## O que é Meditação Zen? ##
 
-Meditação Zen é um aplicativo de meditação para redução de ansiedade com foco em estudantes de nível superior, para a Atividade Extensionista I e II da faculdade Uninter como meu projeto de conclusão de curso.
+Meditação Zen é um aplicativo de meditação para redução de ansiedade com foco em estudantes de nível superior, para a Atividade Extensionista da faculdade Uninter como projeto de conclusão de curso.
 - Curso: CST Ciência de Dados
 - Aluna: Victória Bertini Matos Andrade
 - RU: 3749478
@@ -36,28 +36,21 @@ Após a instalação, abra o Docker Desktop e verifique se o serviço está roda
 - Docker: Container para execução do aplicativo
 
 
-## Créditos das Músicas ##
+## 🎵 Créditos das Músicas ##
 
-Os áudios usados no aplicativo (na pasta `assets/audio/manual/`) são apenas para fins de demonstração e não comerciais.
-Seguem as licenças indicadas na página de origem:
+Todas as músicas são licenciadas sob Creative Commons para uso não comercial:
 
-- Noite (`assets/audio/manual/Noite/`):
-      Moonlight by Scott Buckley | www.scottbuckley.com.au
-      Music promoted by https://www.chosic.com/free-music/all/
-      Creative Commons CC BY 4.0
-      https://creativecommons.org/licenses/by/4.0/
+| Categoria | Música | Artista | Licença |
+|-----------|--------|---------|---------|
+| 🌙 Noite | Moonlight | Scott Buckley | CC BY 4.0 |
+| 🌊 Calmaria | Adrift Among Infinite Stars | Scott Buckley | CC BY 4.0 |
+| 🌅 Pôr do Sol | Harmony of the Earth | Alex-Productions | CC BY 3.0 |
 
-- Calmaria (`assets/audio/manual/Calmaria/`):
-      Adrift Among Infinite Stars by Scott Buckley | www.scottbuckley.com.au
-      Music promoted by https://www.chosic.com/free-music/all/
-      Creative Commons CC BY 4.0
-      https://creativecommons.org/licenses/by/4.0/
-
-- Pôr do Sol (`assets/audio/manual/Por do Sol/`):
-      Harmony of the Earth by Alex- Productions | https://onsound.eu/
-      Music promoted by https://www.chosic.com/free-music/all/
-      Creative Commons CC BY 3.0
-      https://creativecommons.org/licenses/by/3.0/
+**Links oficiais:**
+- Scott Buckley: www.scottbuckley.com.au
+- Alex-Productions: https://onsound.eu/
+- Promovido por: https://www.chosic.com/free-music/all/
+- Licenças: https://creativecommons.org/licenses/by/4.0/ | https://creativecommons.org/licenses/by/3.0/
 
 
 ## Licença ##
