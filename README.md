@@ -1,5 +1,11 @@
 ## O que é Meditação Zen? ##
 
+![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)
+![PHP](https://img.shields.io/badge/PHP-8.0-blue)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-green)
+
 Meditação Zen é um aplicativo de meditação para redução de ansiedade com foco em estudantes de nível superior, para a Atividade Extensionista da faculdade Uninter como projeto de conclusão de curso.
 - Curso: CST Ciência de Dados
 - Aluna: Victória Bertini Matos Andrade
@@ -36,15 +42,15 @@ Após a instalação, abra o Docker Desktop e verifique se o serviço está roda
 - Docker: Container para execução do aplicativo
 
 
-## 🎵 Créditos das Músicas ##
+## Créditos das Músicas ##
 
 Todas as músicas são licenciadas sob Creative Commons para uso não comercial:
 
 | Categoria | Música | Artista | Licença |
 |-----------|--------|---------|---------|
-| 🌙 Noite | Moonlight | Scott Buckley | CC BY 4.0 |
-| 🌊 Calmaria | Adrift Among Infinite Stars | Scott Buckley | CC BY 4.0 |
-| 🌅 Pôr do Sol | Harmony of the Earth | Alex-Productions | CC BY 3.0 |
+| Noite | Moonlight | Scott Buckley | CC BY 4.0 |
+| Calmaria | Adrift Among Infinite Stars | Scott Buckley | CC BY 4.0 |
+| Pôr do Sol | Harmony of the Earth | Alex-Productions | CC BY 3.0 |
 
 **Links oficiais:**
 - Scott Buckley: www.scottbuckley.com.au
