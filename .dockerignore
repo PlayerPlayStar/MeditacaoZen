@@ -1,4 +1,4 @@
-#ARQUIVOS PARA O DOCKER IGNORAR
+#archives for docker to ignore
 docker/
 logs/
 uploads/
@@ -10,9 +10,5 @@ Thumbs.db
 .env
 .env.local
 .env.production
-INICIAR.ps1
-PARAR.ps1
-INFOS.md
-EXPLICACOES.md
-INFOS.txt
-PASSO A PASSO.txt
+scripts/
+README.md

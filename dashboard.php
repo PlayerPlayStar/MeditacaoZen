@@ -2,7 +2,7 @@
 session_start();
 require_once 'config/database.php';
 
-// VERIFICAR SE ESTÁ LOGADO
+// checks login
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit;
@@ -21,8 +21,6 @@ $user_name = $_SESSION['user_name'];
     <meta name="keywords" content="meditação, mindfulness, timer, relaxamento">
     <meta name="author" content="Meditação Zen">
     
-
-    <!-- ÍCONE -->
     <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg">
     
     <title>Dashboard - Meditação Zen</title>
@@ -57,7 +55,7 @@ $user_name = $_SESSION['user_name'];
                     <button class="preset-btn" data-time="30">30 min</button>
                 </div>
                 
-                <!-- OPÇÕES DAS MÚSICAS DE FUNDO -->
+                <!-- music options -->
                 <div class="music-controls">
                     <h3>Música de Fundo</h3>
                     <div class="music-options">
@@ -84,7 +82,7 @@ $user_name = $_SESSION['user_name'];
                         <span id="volume-display">50%</span>
                     </div>
                     
-                    <!-- CONTROLE DAS CORES DO GRADIENTE -->
+                    <!-- color control -->
                     <div class="color-controls">
                         <h4>Cores do Gradiente</h4>
                         <div class="color-picker-container">
@@ -105,7 +103,7 @@ $user_name = $_SESSION['user_name'];
                         </div>
                     </div>
                     
-                    <!-- BARRAS COLORIDAS ANIMADAS -->
+                    <!-- visualizer -->
                     <div class="audio-visualizer" id="audio-visualizer" style="display: none;">
                         <div class="visualizer-container">
                             <div class="visualizer-bar" data-frequency="0"></div>
@@ -127,7 +125,7 @@ $user_name = $_SESSION['user_name'];
                         </div>
                     </div>
                     
-                    <!-- UPLOAD DE MÚSICAS FEITAS PELO USUÁRIO -->
+                    <!-- audio uploads from user -->
                     <div class="audio-upload" id="audio-upload">
                         <div class="accordion-header" id="audio-accordion">
                             <h2>Seus Arquivos de Áudio</h2>
@@ -152,8 +150,6 @@ $user_name = $_SESSION['user_name'];
                                 <button type="submit" class="btn btn-primary">Enviar Áudio</button>
                             </form>
                         </div>
-                        
-                            <!-- LISTAR OS ARQUIVOS ENVIADOS -->
                             <div class="audio-files-list" id="audio-files-list">
                                 <h5>Seus Áudios:</h5>
                                 <div id="audio-files-container">
@@ -163,11 +159,8 @@ $user_name = $_SESSION['user_name'];
                         </div>
                     </div>
                 </div>
-                
-                
             </div>
 
-            <!-- HISTÓRICO DAS SESSÕES ANTERIORES-->
             <div class="session-history">
                 <div class="accordion-header" id="history-accordion">
                     <h2>Histórico de Sessões</h2>
@@ -181,6 +174,7 @@ $user_name = $_SESSION['user_name'];
         </main>
     </div>
 
+    <!-- scripts -->
     <script src="assets/js/meditation.js?v=<?php echo filemtime('assets/js/meditation.js'); ?>"></script>
     <script src="assets/js/app.js?v=<?php echo filemtime('assets/js/app.js'); ?>"></script>
     <script src="assets/js/audio-upload.js?v=<?php echo filemtime('assets/js/audio-upload.js'); ?>"></script>

@@ -1,28 +1,24 @@
 <?php
-//INICIO DE SESSÃO
 session_start();
 require_once 'config/database.php';
 
-//VERIFICAR O LOGIN
+// login verification and processing
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
     exit;
 }
 
-//PROCESSAR LOGIN
 if ($_POST && isset($_POST['action']) && $_POST['action'] == 'login') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     
     if ($email && $password) {
-        //CONSULTAR O BANCO DE DADOS
         $stmt = $pdo->prepare("SELECT id, name, email, password FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
         
-        //VALIDAR CREDENCIAIS
+        //credentials verification
         if ($user && password_verify($password, $user['password'])) {
-            //CRIAR UMA SESSÃO
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_email'] = $user['email'];
@@ -36,21 +32,19 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] == 'login') {
     }
 }
 
-//PROCESSAR REGISTRO DO USUÁRIO
+// user registration and creation
 if ($_POST && isset($_POST['action']) && $_POST['action'] == 'register') {
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     
     if ($name && $email && $password) {
-        //VERIFICADOR DE EMAIL
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         
         if ($stmt->fetch()) {
             $error = "Este email já está cadastrado";
         } else {
-            //CRIAR NOVO USUÁRIO
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO users (name, email, password, created_at) VALUES (?, ?, ?, NOW())");
             
@@ -89,7 +83,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] == 'register') {
                 <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
             <?php endif; ?>
 
-            <!-- FORMULÁRIO DE LOGIN -->
+            <!-- login form -->
             <div class="auth-form" id="login-form">
                 <h2>Entrar</h2>
                 <form method="POST">
@@ -107,7 +101,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] == 'register') {
                 </p>
             </div>
 
-            <!-- FORMULÁRIO DE CADASTRO -->
+            <!-- register form -->
             <div class="auth-form" id="register-form" style="display: none;">
                 <h2>Cadastrar</h2>
                 <form method="POST">
