@@ -6,7 +6,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-green)
 
-Meditação Zen é um aplicativo de meditação para redução de ansiedade com foco em estudantes de nível superior, para a Atividade Extensionista da faculdade Uninter como projeto de conclusão de curso.
+Meditação Zen é um aplicativo de meditação para redução de ansiedade com foco em estudantes de nível superior, para a Atividade Extensionista da faculdade Uninter.
 - Curso: CST Ciência de Dados
 - Aluna: Victória Bertini Matos Andrade
 - RU: 3749478
@@ -16,7 +16,7 @@ Meditação Zen é um aplicativo de meditação para redução de ansiedade com 
 
 - Sistema de usuários com registro e login
 - Temporizador com opções de 5 à 30 minutos
-- Efeito de fundo e música ambiente
+- Efeito de fundo e música ambiente personalizável
 - Histórico de sessões
 - Docker para fácil instalação
 
