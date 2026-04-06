@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // register or login button
+    // register and login button
     const showRegisterBtn = document.getElementById('show-register');
     if (showRegisterBtn) {
         showRegisterBtn.addEventListener('click', function(e) {
