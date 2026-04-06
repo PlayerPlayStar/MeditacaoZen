@@ -13,9 +13,9 @@ Meditação Zen é um aplicativo de meditação voltado para a redução da ansi
 
 O projeto foi desenvolvido utilizando principalmente PHP, MySQL e Docker. Para contribuir ou dar andamento com o desenvolvimento, basta clonar o repositório e baixar as dependências necessárias que podem ser obtidas nos sites oficiais abaixo:
 
-PHP: https://www.php.net/downloads.php
-MySQL: https://dev.mysql.com/downloads/installer/
-Docker: https://www.docker.com/products/docker-desktop/
+- PHP: https://www.php.net/downloads.php
+- MySQL: https://dev.mysql.com/downloads/installer/
+- Docker: https://www.docker.com/products/docker-desktop/
 
 
 ## Algumas funcionalidades incluem: ##
