@@ -1,0 +1,15 @@
+#archives for docker to ignore
+docker/
+logs/
+uploads/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env
+.env.local
+.env.production
+scripts/
+README.md
+images/
